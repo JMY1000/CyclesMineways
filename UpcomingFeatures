@@ -1,0 +1,8 @@
+Animated textures (defaults from minecraft, also: grass, leaves, torches)
+Clouds (3d and 2d)
+Better lighting based on time of day
+Varying lighting intensity for different blocks
+Support for different weather types
+Builtin fire
+Restructure block metadata so it uses 2d array
+Removing Alpha node and replacing with alpha channel of RGBA node
