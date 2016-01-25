@@ -7,3 +7,4 @@ Builtin fire
 Restructure block metadata so it uses 2d array
 Removing Alpha node and replacing with alpha channel of RGBA node
 Lower noise lighting
+Increase diffuse on grass texture
