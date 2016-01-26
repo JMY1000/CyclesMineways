@@ -1,3 +1,5 @@
+v1.2.0 alpha
+
 Fixed bug in transparentBlocks list
 Added more print statements for debugging
 Added support for more scenes and input within the fields
