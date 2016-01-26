@@ -1,7 +1,7 @@
 # Cycles Mineways setup
 # Created by Jonathan Edelman
 # Version 1.2.0 alpha, 1/25/16
-# Copyright © 2016 Jonathan Edelman
+# Copyright © 2015 Jonathan Edelman
 # Please send suggestions or report bugs at jonathanedelman@mail.com
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation under version 3 of the License.
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -42,9 +42,11 @@
 
 
 #The prefix of the texture files it uses
-PREFIX=""
-#If this is true, the script will request a scene to work with; otherwise, it will use all scenes
-USER_INPUT_SCENE=False
+PREFIX="pistons"
+#If this list has scenes, the script only use those scenes to work with;
+#otherwise, it will use all scenes
+#example: USER_INPUT_SCENE = ["scene","scene2","randomScene123"]
+USER_INPUT_SCENE=[]
 #Cloud state, either True or False
 CLOUD_STATE=False
 #Changing the number here changes what water shader will be used, 0 to use the normal shader, 1 to use a partially transparent but still only textured shader, 2 for a choppy shader, 3 for a wavy shader
@@ -57,7 +59,8 @@ TIME_OF_DAY=float(12.00)
 LAVA_ANIMATION=False
 
 #List of transparent blocks
-transparentBlocks=["Acacia/Dark_Oak_Leaves","Acacia_Door","Activator_Rail","Beacon","Bed","Birch_Door","Brewing_Stand","Brown_Mushroom","Cactus","Carrot","Carrots",""Cauldron",""Cobweb","Cocoa","Crops","Dandelion","Dark_Oak_Door","Dead_Bush","Detector_Rail","Enchantment_Table","Glass","Glass_Pane","Grass","Iron_Bars","Iron_Door","Iron_Trapdoor","Jungle_Door","Large_Flower","Leaves","Lily_Pad","Melon_Stem","Monster_Spawner","Nether_Wart","Oak_Leaves","Oak_Sapling","Poppy","Potato","Potatoes","Powered_Rail","Powered_Rail_(off),"Pumpkin_Stem","Rail","Red_Mushroom","Redstone_Comparator_(off)","Redstone_Torch_(off)","Repeater_(off)","Sapling","Spruce_Door","Stained_Glass","Sugar_Cane","Sunflower","Tall_Grass","Trapdoor","Vines","Wheat","Wooden_Door"]
+transparentBlocks=["Acacia_Leaves","Dark_Oak_Leaves","Acacia_Door","Activator_Rail",
+"Beacon","Bed","Birch_Door","Brewing_Stand","Brown_Mushroom","Cactus","Carrot","Carrots","Cauldron","Cobweb","Cocoa","Crops","Dandelion","Dark_Oak_Door","Dead_Bush","Detector_Rail","Enchantment_Table","Glass","Glass_Pane","Grass","Iron_Bars","Iron_Door","Iron_Trapdoor","Jungle_Door","Large_Flower","Leaves","Lily_Pad","Melon_Stem","Monster_Spawner","Nether_Wart","Oak_Leaves","Oak_Sapling","Poppy","Potato","Potatoes","Powered_Rail","Powered_Rail_(off)","Pumpkin_Stem","Rail","Red_Mushroom","Redstone_Comparator_(off)","Redstone_Torch_(off)","Repeater_(off)","Sapling","Spruce_Door","Stained_Glass","Sugar_Cane","Sunflower","Tall_Grass","Trapdoor","Vines","Wheat","Wooden_Door"]
 #List of light emitting blocks
 lightBlocks=["End_Portal","Redstone_Lamp_(on)","Glowstone","Stationary_Lava","Flowing_Lava"]
 #List of light emitting and transparent block
@@ -605,40 +608,43 @@ def main():
     
     
     #Setting the render engine to Cycles
-    if USER_INPUT_SCENE==True:
-        #get the scene to use
-        scene=input("Please enter the scene you would like to use (default \"Scene\"): ")
-        if scene=="":
-            scene = "Scene"
-        #Set the render engine to Cycles
-        bpy.data.scenes[scene].render.engine='CYCLES'
-    else:
+    if len(USER_INPUT_SCENE)==0:
         for scene in bpy.data.scenes:
             scene.render.engine = 'CYCLES'
+    else:
+        for w in USER_INPUT_SCENE:
+            #Set the render engine to Cycles
+            bpy.data.scenes[w].render.engine='CYCLES'
     print("Render engine set to Cycles")
             
     
     try:
         bpy.data.images[PREFIX+"-RGBA.png"]
     except:
-        print("ERROR! PREFIX INVALID")
+        print("Cannot find image. PREFIX is invalid.")
+        return
     
     
     #for every material
     for material in bpy.data.materials:
         #print that the material is now being worked on
-        print("Started  "+str(material.name))
+        print("Started  "+str(material))
+        material_suffix = material.name[material.name.rfind("."):len(material.name)] # gets the .001 .002 .003 ... of the material
         #if the material is transparent use a special shader
-        if any(material==bpy.data.materials.get(transparentBlock) for transparentBlock in transparentBlocks):
+        if any(material==bpy.data.materials.get(transparentBlock+material_suffix) for transparentBlock in transparentBlocks):
+            print("Is transparent.")
             Transparent_Shader(material)
         #if the material is a light emmitting block use a special shader
-        elif any(material==bpy.data.materials.get(lightBlock) for lightBlock in lightBlocks):
+        elif any(material==bpy.data.materials.get(lightBlock+material_suffix) for lightBlock in lightBlocks):
+            print("Is light block.")
             Light_Emiting_Shader(material)
         #if the material is a light emmitting transparent block use a special shader
-        elif any(material==bpy.data.materials.get(lightTransparentBlocks) for lightTransparentBlocks in lightTransparentBlocks):
+        elif any(material==bpy.data.materials.get(lightTransparentBlocks+material_suffix) for lightTransparentBlocks in lightTransparentBlocks):
+            print("Is transparent light block.")
             Transparent_Emiting_Shader(material)
         #if the material is stationary water, use a special shader
-        elif material==bpy.data.materials.get("Stationary_Water"):
+        elif material==bpy.data.materials.get("Stationary_Water"+material_suffix):
+            print("Is water.")
             if WATER_SHADER_TYPE==0:
                 Normal_Shader(material)
             elif WATER_SHADER_TYPE==1:
@@ -650,16 +656,20 @@ def main():
             else:
                 print("ERROR! COULD NOT SET UP WATER")
         #if the material is flowing water, use a special shader
-        elif material==bpy.data.materials.get("Flowing_Water"):
+        elif material==bpy.data.materials.get("Flowing_Water"+material_suffix):
+            print("Is flowing water.")
             pass
         #if the material is slime, use a special shader
-        elif material==bpy.data.materials.get("Slime"):
+        elif material==bpy.data.materials.get("Slime"+material_suffix):
+            print("Is slime.")
             Slime_Shader(material)
         #if the material is ice, use a special shader
-        elif material==bpy.data.materials.get("Ice"):
+        elif material==bpy.data.materials.get("Ice"+material_suffix):
+            print("Is ice.")
             Ice_Shader(material)
         #else use a normal shader
         else:
+            print("Is normal.")
             Normal_Shader(material)
         #print the material has finished
         print("Finished "+str(material.name))
