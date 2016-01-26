@@ -628,7 +628,7 @@ def main():
     #for every material
     for material in bpy.data.materials:
         #print that the material is now being worked on
-        print("Started",material.name)
+        print("Started ",material.name)
         material_suffix = material.name[material.name.rfind("."):len(material.name)] # gets the .001 .002 .003 ... of the material
         try:
             int(material_suffix[1:])
