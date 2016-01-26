@@ -696,21 +696,24 @@ def main():
     Sun_Shader()
     print("Sun shaded")
     print("starting loop")
+    
+    #Remove unnecessary textures
+    print("Removing unnecessary textures")
     for img in bpy.data.images:
         try:
-            print("checking",img.name)
+            print("Checking ",img.name)
             suffix = img.name.rfind(".")
-            print("checking if end is an int")
+            print("Checking if texture can be removed")
             int(img.name[suffix+1:])
-            print("end is an int")
+            print("Texture "+img.name+" removed")
             img.user_clear()
             bpy.data.images.remove(img)
         except:
-            print("does not end in an int")
+            print("Texture not removed")
             if (img.name==PREFIX+"-Alpha.png") or (img.name==PREFIX+"-RGB.png"):
                 img.user_clear()
                 bpy.data.images.remove(img)
-    print("done with loop")
+    print("Finished removing unnecessary textures")
 
 
 
