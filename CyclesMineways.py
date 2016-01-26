@@ -42,7 +42,7 @@
 
 
 #The prefix of the texture files it uses
-PREFIX="pistons"
+PREFIX=""
 #If this list has scenes, the script only use those scenes to work with;
 #otherwise, it will use all scenes
 #example: USER_INPUT_SCENE = ["scene","scene2","randomScene123"]
@@ -50,9 +50,9 @@ USER_INPUT_SCENE=[]
 #Cloud state, either True or False
 CLOUD_STATE=False
 #Changing the number here changes what water shader will be used, 0 to use the normal shader, 1 to use a partially transparent but still only textured shader, 2 for a choppy shader, 3 for a wavy shader
-WATER_SHADER_TYPE=int(1)
+WATER_SHADER_TYPE=1
 #Changing the number here changes the type of sky shader used, 0 for no shader
-SKY_SHADER_TYPE=int(0)
+SKY_SHADER_TYPE=0
 #Time of day–note that the decimal is not in minutes, and is a fraction (ex. 12:30 is 12.50)
 TIME_OF_DAY=float(12.00)
 #Decide if  lava is animated
@@ -69,7 +69,7 @@ lightTransparentBlocks=["Fire","Powered_Rail_(on)","Redstone_Comparator_(on)","R
 
 #SHADERS
 
-def Normal_Shader(material):
+def Normal_Shader(material,rgba_image):
     #Make the material use nodes
     material.use_nodes=True
     #Set the variable node_tree to be the material's node tree and variable nodes to be the node tree's nodes
@@ -89,7 +89,8 @@ def Normal_Shader(material):
     diffuse_node.location=(0,300)
     #Create the rgba node
     rgba_node=nodes.new('ShaderNodeTexImage')
-    rgba_node.image = bpy.data.images[PREFIX+"-RGBA.png"]
+    rgba_node.image = rgba_image#bpy.data.images[PREFIX+"-RGBA.png"]
+    print("settings normal thingy to use image:",rgba_node.image)
     rgba_node.interpolation=('Closest')
     rgba_node.location=(-300,300)
     rgba_node.label = "RGBA"
@@ -117,7 +118,7 @@ def Transparent_Shader(material):
     mix_node.location=(0,300)
     #Create the diffuse node
     diffuse_node=nodes.new('ShaderNodeBsdfDiffuse')
-    diffuse_node.location=(-300,300)
+    diffuse_node.location=(-300,400)
     #Create the transparent node
     transparent_node=nodes.new('ShaderNodeBsdfTransparent')
     transparent_node.location=(-300,0)
@@ -128,15 +129,16 @@ def Transparent_Shader(material):
     rgba_node.location=(-600,300)
     rgba_node.label = "RGBA"
     #Create the alpha node
-    alpha_node=nodes.new('ShaderNodeTexImage')
-    alpha_node.image = bpy.data.images[PREFIX+"-Alpha.png"]
-    alpha_node.interpolation=('Closest')
-    alpha_node.location=(-600,0)
-    alpha_node.label = "Alpha"
+    #alpha_node=nodes.new('ShaderNodeTexImage')
+    #alpha_node.image = bpy.data.images[PREFIX+"-Alpha.png"]
+    #alpha_node.interpolation=('Closest')
+    #alpha_node.location=(-600,0)
+    #alpha_node.label = "Alpha"
     #Link the nodes
     links=node_tree.links
     link=links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
-    link=links.new(alpha_node.outputs["Color"],mix_node.inputs["Fac"])
+    link=links.new(rgba_node.outputs["Alpha"],mix_node.inputs["Fac"])
+    #link=links.new(alpha_node.outputs["Color"],mix_node.inputs["Fac"])
     link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
     link=links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
     link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
@@ -191,7 +193,7 @@ def Transparent_Emiting_Shader(material):
     mix_node.location=(0,300)
     #Create the diffuse node
     emission_node=nodes.new('ShaderNodeEmission')
-    emission_node.location=(-300,300)
+    emission_node.location=(-300,400)
     #Create the transparent node
     transparent_node=nodes.new('ShaderNodeBsdfTransparent')
     transparent_node.location=(-300,0)
@@ -202,15 +204,16 @@ def Transparent_Emiting_Shader(material):
     rgba_node.location=(-600,300)
     rgba_node.label = "RGBA"
     #Create the alpha node
-    alpha_node=nodes.new('ShaderNodeTexImage')
-    alpha_node.image = bpy.data.images[PREFIX+"-Alpha.png"]
-    alpha_node.interpolation=('Closest')
-    alpha_node.location=(-600,0)
-    alpha_node.label = "Alpha"
+    #alpha_node=nodes.new('ShaderNodeTexImage')
+    #alpha_node.image = bpy.data.images[PREFIX+"-Alpha.png"]
+    #alpha_node.interpolation=('Closest')
+    #alpha_node.location=(-600,0)
+    #alpha_node.label = "Alpha"
     #Link the nodes
     links=node_tree.links
     link=links.new(rgba_node.outputs["Color"],emission_node.inputs["Color"])
-    link=links.new(alpha_node.outputs["Color"],mix_node.inputs["Fac"])
+    link=links.new(rgba_node.outputs["Alpha"],mix_node.inputs["Fac"])
+    #link=links.new(alpha_node.outputs["Color"],mix_node.inputs["Fac"])
     link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
     link=links.new(emission_node.outputs["Emission"],mix_node.inputs[2])
     link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
@@ -619,17 +622,20 @@ def main():
             
     
     try:
-        bpy.data.images[PREFIX+"-RGBA.png"]
+        texture_rgba_image = bpy.data.images[PREFIX+"-RGBA.png"]
     except:
         print("Cannot find image. PREFIX is invalid.")
         return
     
-    
     #for every material
     for material in bpy.data.materials:
         #print that the material is now being worked on
-        print("Started  "+str(material))
+        print("Started",material.name)
         material_suffix = material.name[material.name.rfind("."):len(material.name)] # gets the .001 .002 .003 ... of the material
+        try:
+            int(material_suffix[1:])
+        except:
+            material_suffix=""
         #if the material is transparent use a special shader
         if any(material==bpy.data.materials.get(transparentBlock+material_suffix) for transparentBlock in transparentBlocks):
             print("Is transparent.")
@@ -670,7 +676,7 @@ def main():
         #else use a normal shader
         else:
             print("Is normal.")
-            Normal_Shader(material)
+            Normal_Shader(material,texture_rgba_image)
         #print the material has finished
         print("Finished "+str(material.name))
         
@@ -691,6 +697,22 @@ def main():
     print("Started shading sun")
     Sun_Shader()
     print("Sun shaded")
+    print("starting loop")
+    for img in bpy.data.images:
+        try:
+            print("checking",img.name)
+            suffix = img.name.rfind(".")
+            print("checking if end is an int")
+            int(img.name[suffix+1:])
+            print("end is an int")
+            img.user_clear()
+            bpy.data.images.remove(img)
+        except:
+            print("does not end in an int")
+            if (img.name==PREFIX+"-Alpha.png") or (img.name==PREFIX+"-RGB.png"):
+                img.user_clear()
+                bpy.data.images.remove(img)
+    print("done with loop")
 
 
 
