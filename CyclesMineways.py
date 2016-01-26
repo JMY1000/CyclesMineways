@@ -58,8 +58,7 @@ TIME_OF_DAY=float(12.00)
 LAVA_ANIMATION=False
 
 #List of transparent blocks
-transparentBlocks=["Acacia_Leaves","Dark_Oak_Leaves","Acacia_Door","Activator_Rail",
-"Beacon","Bed","Birch_Door","Brewing_Stand","Brown_Mushroom","Cactus","Carrot","Carrots","Cauldron","Cobweb","Cocoa","Crops","Dandelion","Dark_Oak_Door","Dead_Bush","Detector_Rail","Enchantment_Table","Glass","Glass_Pane","Grass","Iron_Bars","Iron_Door","Iron_Trapdoor","Jungle_Door","Large_Flower","Leaves","Lily_Pad","Melon_Stem","Monster_Spawner","Nether_Wart","Oak_Leaves","Oak_Sapling","Poppy","Potato","Potatoes","Powered_Rail","Powered_Rail_(off)","Pumpkin_Stem","Rail","Red_Mushroom","Redstone_Comparator_(off)","Redstone_Torch_(off)","Repeater_(off)","Sapling","Spruce_Door","Stained_Glass","Sugar_Cane","Sunflower","Tall_Grass","Trapdoor","Vines","Wheat","Wooden_Door"]
+transparentBlocks=["Acacia_Leaves","Dark_Oak_Leaves","Acacia_Door","Activator_Rail","Beacon","Bed","Birch_Door","Brewing_Stand","Brown_Mushroom","Cactus","Carrot","Carrots","Cauldron","Cobweb","Cocoa","Crops","Dandelion","Dark_Oak_Door","Dead_Bush","Detector_Rail","Enchantment_Table","Glass","Glass_Pane","Grass","Iron_Bars","Iron_Door","Iron_Trapdoor","Jungle_Door","Large_Flower","Leaves","Lily_Pad","Melon_Stem","Monster_Spawner","Nether_Wart","Oak_Leaves","Oak_Sapling","Poppy","Potato","Potatoes","Powered_Rail","Powered_Rail_(off)","Pumpkin_Stem","Rail","Red_Mushroom","Redstone_Comparator_(off)","Redstone_Torch_(off)","Repeater_(off)","Sapling","Spruce_Door","Stained_Glass","Sugar_Cane","Sunflower","Tall_Grass","Trapdoor","Vines","Wheat","Wooden_Door"]
 #List of light emitting blocks
 lightBlocks=["End_Portal","Redstone_Lamp_(on)","Glowstone","Stationary_Lava","Flowing_Lava"]
 #List of light emitting and transparent block
