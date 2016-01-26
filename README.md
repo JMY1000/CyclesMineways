@@ -40,6 +40,6 @@ To apply this script, click on the "Run Script" button at the bottom right of th
 To see that the script did something, from the upper left select "Window" and "Toggle System Console".
 If you are running OS X, you will need to follow a different set of instructions to do this.
 Find you application, right click it, hit "Show Package Contents".
-Navigate to Contents/MacOS/blender
+Navigate to Contents/MacOS/blender.
 Launch blender this way; this will show the terminal.
 It isn't critical to see this window, but gives you a warm and fuzzy feeling that the script has worked. It also helps provide debug info if something goes wrong.
