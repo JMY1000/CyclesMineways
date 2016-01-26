@@ -8,7 +8,7 @@
 
 
 
-Please send suggestions or report bugs at jonathanedelman@mail.com
+Please send suggestions or report bugs at jonathanedelman@mail.com or discuss at https://github.com/JMY1000/CyclesMineways/.
 
 --------
 
