@@ -4,4 +4,5 @@ Fixed bug in transparentBlocks list
 Added more print statements for debugging
 Added support for more scenes and input within the fields
 Fixed having excess textures
+Added HSV node for sky to correct colors
 Formatted README.txt
