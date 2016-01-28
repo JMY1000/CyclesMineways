@@ -491,13 +491,18 @@ def Sky_Day_Shader(world):
     #Add the background node
     background_node=nodes.new('ShaderNodeBackground')
     background_node.location=(0,300)
+    #Add the color correct node
+    HSV_node=nodes.new('ShaderNodeHueSaturation')
+    HSV_node.inputs["Value"].default_value=1.6 #Corrects the color value to be the same as Minecraft's sky
+    HSV_node.location=(-300,300)
     #Add the sky texture node
     sky_node=nodes.new('ShaderNodeTexSky')
-    sky_node.location=(-300,300)
+    sky_node.location=(-600,300)
     #Link the nodes
     links=node_tree.links
     link=links.new(background_node.outputs["Background"],output_node.inputs["Surface"])
-    link=links.new(sky_node.outputs["Color"],background_node.inputs["Color"])
+    link=links.new(sky_node.outputs["Color"],HSV_node.inputs["Color"])
+    link=links.new(HSV_node.outputs["Color"],background_node.inputs["Color"])
     
 
 def Sky_Night_Shader(world):
