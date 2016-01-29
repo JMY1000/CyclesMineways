@@ -608,7 +608,7 @@ def Sun_Shader():
 
 def main():
     
-    print("Main started)
+    print("Main started")
 
     #packing all the files into one .blend 
     bpy.ops.file.pack_all()
