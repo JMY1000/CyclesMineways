@@ -607,7 +607,9 @@ def Sun_Shader():
 #MAIN
 
 def main():
-      
+    
+    print("Main started)
+
     #packing all the files into one .blend 
     bpy.ops.file.pack_all()
     print("Files packed")
@@ -726,5 +728,5 @@ print("Started")
     
 #importing the Blender Python library
 import bpy
-print("Libraries imported, starting main loop.")
+print("Libraries imported")
 main()
