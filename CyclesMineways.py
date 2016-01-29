@@ -515,7 +515,17 @@ def Sky_Night_Shader(world):
         nodes.remove(eachNode)
     #Add the output node
     output_node=nodes.new('ShaderNodeOutputWorld')
-    output_node.location=(300,300)
+    output_node.location=(600,300)
+    #Add solid color background for diffuse textures
+    solid_background_node=nodes.new('ShaderNodeBackground')
+    solid_background_node.location=(0,150)
+    solid_background_node.inputs["Color"].default_value=(0.1,0.1,0.1,1)
+    #Add Light Path Node to make sure solid colour is only used for diffuse shaders
+    light_path_node=nodes.new('ShaderNodeLightPath')
+    light_path_node.location=(0,600)
+    #Add mix shader to add the diffuse-only background
+    diffuse_mixer_node=nodes.new('ShaderNodeMixShader')
+    diffuse_mixer_node.location=(300,300)
     #Add the mix node
     mix_node=nodes.new('ShaderNodeMixShader')
     mix_node.location=(0,300)
@@ -582,7 +592,11 @@ def Sky_Night_Shader(world):
     texture_coordinate_node.location=(-2700,300)
     #Link the nodes
     links=node_tree.links
-    link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    link=links.new(diffuse_mixer_node.outputs["Shader"],output_node.inputs["Surface"])
+    link=links.new(mix_node.outputs["Shader"],diffuse_mixer_node.inputs[1])
+    link=links.new(solid_background_node.outputs["Background"],diffuse_mixer_node.inputs[2])
+    link=links.new(light_path_node.outputs[2],diffuse_mixer_node.inputs[0]) # connects "Is Diffuse Ray" to factor
+    #link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
     link=links.new(background_node.outputs["Background"],mix_node.inputs[1])
     link=links.new(background_node_two.outputs["Background"],mix_node.inputs[2])
     link=links.new(colorramp_node.outputs["Color"],background_node.inputs["Color"])
