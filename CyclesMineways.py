@@ -714,7 +714,7 @@ def main():
             bpy.data.images.remove(img)
         except:
             if (img.name==PREFIX+"-Alpha.png") or (img.name==PREFIX+"-RGB.png"):
-                print("Texture "+img.name+" removed for being redundant
+                print("Texture "+img.name+" removed for being redundant")
                 img.user_clear()
                 bpy.data.images.remove(img)
             else:
