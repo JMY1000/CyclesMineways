@@ -53,7 +53,7 @@ WATER_SHADER_TYPE=1
 #Changing the number here changes the type of sky shader used, 0 for no shader
 SKY_SHADER_TYPE=0
 #Time of day–note that the decimal is not in minutes, and is a fraction (ex. 12:30 is 12.50)
-TIME_OF_DAY=float(12.00)
+TIME_OF_DAY=12.00
 #Decide if  lava is animated
 LAVA_ANIMATION=False
 
@@ -633,7 +633,7 @@ def main():
     #for every material
     for material in bpy.data.materials:
         #print that the material is now being worked on
-        print("Started ",material.name)
+        print("Started "+material.name)
         material_suffix = material.name[material.name.rfind("."):len(material.name)] # gets the .001 .002 .003 ... of the material
         try:
             int(material_suffix[1:])
@@ -681,7 +681,7 @@ def main():
             print("Is normal.")
             Normal_Shader(material,texture_rgba_image)
         #print the material has finished
-        print("Finished "+str(material.name))
+        print("Finished "+material.name)
         
     #Set up the sky
     print("Started shading sky")
@@ -700,24 +700,23 @@ def main():
     print("Started shading sun")
     Sun_Shader()
     print("Sun shaded")
-    print("starting loop")
     
     #Remove unnecessary textures
     print("Removing unnecessary textures")
     for img in bpy.data.images:
         try:
-            print("Checking ",img.name)
             suffix = img.name.rfind(".")
-            print("Checking if texture can be removed")
             int(img.name[suffix+1:])
-            print("Texture "+img.name+" removed")
+            print("Texture "+img.name+" removed for being a duplicate.")
             img.user_clear()
             bpy.data.images.remove(img)
         except:
-            print("Texture not removed")
             if (img.name==PREFIX+"-Alpha.png") or (img.name==PREFIX+"-RGB.png"):
+                print("Texture "+img.name+" removed for being redundant
                 img.user_clear()
                 bpy.data.images.remove(img)
+            else:
+                print("Texture "+img.name+" was not removed.")
     print("Finished removing unnecessary textures")
 
 
@@ -727,5 +726,5 @@ print("Started")
     
 #importing the Blender Python library
 import bpy
-print("Libraries imported")        
+print("Libraries imported, starting main loop.")
 main()
