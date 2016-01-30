@@ -85,6 +85,7 @@ def Normal_Shader(material,rgba_image):
     #Create the diffuse node
     diffuse_node=nodes.new('ShaderNodeBsdfDiffuse')
     diffuse_node.location=(0,300)
+    diffuse_node.inputs[1].default_value=0.3 # sets diffuse to 0.3 for all normal blocks
     #Create the rgba node
     rgba_node=nodes.new('ShaderNodeTexImage')
     rgba_node.image = rgba_image#bpy.data.images[PREFIX+"-RGBA.png"]
@@ -155,20 +156,44 @@ def Light_Emiting_Shader(material):
     #diffuse_node=nodes.get('ShaderNodeBsdfDiffuse')
     #Create the output node
     output_node=nodes.new('ShaderNodeOutputMaterial')
-    output_node.location=(300,300)
-    #Create the emission node
-    emission_node=nodes.new('ShaderNodeEmission')
-    emission_node.location=(0,300)
+    output_node.location=(600,300)
+    #Create the diffuse deciding mix node
+    diffuse_mix_node=nodes.new('ShaderNodeMixShader')
+    diffuse_mix_node.location=(300,300)
+    #Create the Light Path Node
+    light_path_node=nodes.new('ShaderNodeLightPath')
+    light_path_node.location=(0,600)
+    #Create the diffuse emission
+    indirect_emission_node=nodes.new('ShaderNodeEmission')
+    indirect_emission_node.location=(0,100)
+    #Create the Light Falloff node for indirect emission
+    light_falloff_node=nodes.new('ShaderNodeLightFalloff')
+    light_falloff_node.location=(-300,0)
+    light_falloff_node.inputs[0].default_value=5000 #sets strength of light
+    light_falloff_node.inputs[1].default_value=0.05 #sets smooth level of light
+    #Create the HSV node to brighten the light
+    hsv_node=nodes.new('ShaderNodeHueSaturation')
+    hsv_node.location=(-300,200)
+    hsv_node.inputs["Value"].default_value=3 # brightens the color for better lighting
+    #Create the direct emission node
+    direct_emission_node=nodes.new('ShaderNodeEmission')
+    direct_emission_node.location=(0,300)
     #Create the rgba node
     rgba_node=nodes.new('ShaderNodeTexImage')
     rgba_node.image = bpy.data.images[PREFIX+"-RGBA.png"]
     rgba_node.interpolation=('Closest')
-    rgba_node.location=(-300,300)
+    rgba_node.location=(-600,300)
     rgba_node.label = "RGBA"
     #Link the nodes
     links=node_tree.links
-    link=links.new(rgba_node.outputs["Color"],emission_node.inputs["Color"])
-    link=links.new(emission_node.outputs["Emission"],output_node.inputs["Surface"])
+    link=links.new(rgba_node.outputs["Color"],direct_emission_node.inputs["Color"])
+    link=links.new(rgba_node.outputs["Color"],hsv_node.inputs["Color"])
+    link=links.new(hsv_node.outputs["Color"],indirect_emission_node.inputs["Color"])
+    link=links.new(light_falloff_node.outputs[1],indirect_emission_node.inputs[1]) #connects linear output to emission strength
+    link=links.new(indirect_emission_node.outputs["Emission"],diffuse_mix_node.inputs[2])
+    link=links.new(direct_emission_node.outputs["Emission"],diffuse_mix_node.inputs[1])
+    link=links.new(light_path_node.outputs[2],diffuse_mix_node.inputs["Fac"]) #links "is diffuse ray" to factor of mix node
+    link=links.new(diffuse_mix_node.outputs["Shader"],output_node.inputs["Surface"])
     if (material==bpy.data.materials.get("Stationary_Lava") or material==bpy.data.materials.get("Flowing_Lava")) and LAVA_ANIMATION==True:
         pass
     
