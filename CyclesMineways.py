@@ -84,7 +84,6 @@ def Normal_Shader(material):
     #Create the diffuse node
     diffuse_node=nodes.new('ShaderNodeBsdfDiffuse')
     diffuse_node.location=(0,300)
-    diffuse_node.inputs[1].default_value=0.3 # sets diffuse roughness to 0.3 for all normal blocks
     #Create the rgba node
     rgba_node=nodes.new('ShaderNodeTexImage')
     rgba_node.image = bpy.data.images[PREFIX+"-RGBA.png"]
