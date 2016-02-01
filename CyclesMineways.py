@@ -56,6 +56,9 @@ SKY_SHADER_TYPE=0
 TIME_OF_DAY=12.00
 #Decide if  lava is animated
 LAVA_ANIMATION=False
+#Use virtual displacement (changes normals for illusion of roughness) for wooden plank blocks
+#NOTE: this currently only works for oak wood planks
+DISPLACE_WOOD=False
 
 #List of transparent blocks
 transparentBlocks=["Acacia_Leaves","Dark_Oak_Leaves","Acacia_Door","Activator_Rail","Beacon","Bed","Birch_Door","Brewing_Stand","Brown_Mushroom","Cactus","Carrot","Carrots","Cauldron","Cobweb",
@@ -91,8 +94,7 @@ def Normal_Shader(material,rgba_image):
     diffuse_node.inputs[1].default_value=0.3 # sets diffuse to 0.3 for all normal blocks
     #Create the rgba node
     rgba_node=nodes.new('ShaderNodeTexImage')
-    rgba_node.image = rgba_image#bpy.data.images[PREFIX+"-RGBA.png"]
-    print("settings normal thingy to use image:",rgba_node.image)
+    rgba_node.image = rgba_image
     rgba_node.interpolation=('Closest')
     rgba_node.location=(-300,300)
     rgba_node.label = "RGBA"
@@ -646,6 +648,112 @@ def Sun_Shader():
     pass
 
 
+def Wood_Displacement_Texture(material,rgba_image):
+    #Make the material use nodes
+    material.use_nodes=True
+    #Set the variable node_tree to be the material's node tree and variable nodes to be the node tree's nodes
+    node_tree=material.node_tree
+    nodes=material.node_tree.nodes
+    #Remove the old nodes
+    for eachNode in nodes:
+        nodes.remove(eachNode)
+    #commented out alt versions
+    #node_tree=bpy.data.materials[material].node_tree
+    #diffuse_node=nodes.get('ShaderNodeBsdfDiffuse')
+    #Create the output node
+    output_node=nodes.new('ShaderNodeOutputMaterial')
+    output_node.location=(300,300)
+    #Create the diffuse node
+    diffuse_node=nodes.new('ShaderNodeBsdfDiffuse')
+    diffuse_node.location=(0,300)
+    diffuse_node.inputs[1].default_value=0.3 # sets diffuse to 0.3 for all normal blocks
+    #Create the rgba node
+    rgba_node=nodes.new('ShaderNodeTexImage')
+    rgba_node.image = rgba_image
+    rgba_node.interpolation=('Closest')
+    rgba_node.location=(-300,300)
+    rgba_node.label = "RGBA"
+    
+    #Create displacement node tree
+    
+    #Create magic node 1
+    #depth 3
+    #no vector
+    #scale 5
+    #distortion 1
+    magic_node_one=nodes.new('ShaderNodeTexMagic')
+    magic_node_one.location=(-900,200)
+    magic_node_one.turbulence_depth=6 #sets depth to 6
+    magic_node_one.inputs[1].default_value=5 #sets scale to 5
+    magic_node_one.inputs[2].default_value=10 #sets distortion to 10
+    
+    #Create magic node 2
+    #depth 5
+    #no vector
+    #scale 3.3
+    #distortion 2.7
+    magic_node_two=nodes.new('ShaderNodeTexMagic')
+    magic_node_two.location=(-900,0)
+    magic_node_two.turbulence_depth=5 #sets depth to 5
+    magic_node_two.inputs[1].default_value=3.3 #sets scale to 3.3
+    magic_node_two.inputs[2].default_value=2.7 #sets distortion to 2.7
+    
+    #Create Add node
+    #Connect to magic node 1 and 2
+    math_add_node_one=nodes.new('ShaderNodeMath')
+    math_add_node_one.location=(-600,0)
+    math_add_node_one.operation="ADD"
+    
+    #Create noise texture
+    #Scale 6.9
+    #Detail 5
+    #distortion 8
+    noise_node=nodes.new('ShaderNodeTexNoise')
+    noise_node.location=(-900,-200)
+    noise_node.inputs[1].default_value=6.9 #sets scale to 6.9
+    noise_node.inputs[2].default_value=5 #set detail to 5
+    noise_node.inputs[3].default_value=8 #sets distortion to 8
+    
+    #Create multiply
+    #connect to noise
+    #default value 5 for second
+    math_multiply_node=nodes.new('ShaderNodeMath')
+    math_multiply_node.location=(-600,-200)
+    math_multiply_node.operation="MULTIPLY"
+    math_multiply_node.inputs[1].default_value=5 #sets multiply value to 5
+    
+    #Create 2nd Add node
+    #connect to Add node
+    #connect to multiply node
+    math_add_node_two=nodes.new('ShaderNodeMath')
+    math_add_node_two.operation="ADD"
+    math_add_node_two.location=(-300,0)
+    
+    
+    #Create Divide node
+    #connect from 2nd add
+    #set input [1] to 10
+    #connect to materials output
+    math_divide_node=nodes.new('ShaderNodeMath')
+    math_divide_node.location=(0,150)
+    math_divide_node.operation="DIVIDE"
+    math_divide_node.inputs[1].default_value=10
+    
+    #Link the nodes
+    links=node_tree.links
+    #link surface modifiers
+    link=links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
+    link=links.new(diffuse_node.outputs["BSDF"],output_node.inputs["Surface"])
+    #link displacement modifiers
+    link=links.new(magic_node_one.outputs["Fac"],math_add_node_one.inputs[0])
+    link=links.new(magic_node_two.outputs["Fac"],math_add_node_one.inputs[1])
+    link=links.new(math_add_node_one.outputs[0],math_add_node_two.inputs[0])
+    link=links.new(noise_node.outputs["Fac"],math_multiply_node.inputs[0])
+    link=links.new(math_multiply_node.outputs[0],math_add_node_two.inputs[1])
+    link=links.new(math_add_node_two.outputs[0],math_divide_node.inputs[0])
+    link=links.new(math_divide_node.outputs[0],output_node.inputs["Displacement"])
+
+
 #MAIN
 
 def main():
@@ -720,6 +828,10 @@ def main():
         elif material==bpy.data.materials.get("Ice"+material_suffix):
             print("Is ice.")
             Ice_Shader(material)
+        #if the material is wood and DISPLACE_WOOD is True
+        elif (material==bpy.data.materials.get("Oak_Wood_Planks"+material_suffix))and(DISPLACE_WOOD):
+            print("Is displaced wooden planks.")
+            Wood_Displacement_Texture(material,texture_rgba_image)
         #else use a normal shader
         else:
             print("Is normal.")
