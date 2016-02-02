@@ -11,6 +11,6 @@ Colored glass uses its color for transparency
 
 -- For when we have nothing else to do --
 "Real" fire using inbuilt fire engine (optional, default off)
-"Real" tall grass using inbuilt fire engine (optional, default off)
-"Real" low grass on grass (dirt) blocks (optional, default off)
+"Real" tall grass using inbuilt hair engine (optional, default off)
+"Real" low grass on grass (dirt) blocks using hair engine (optional, default off)
 Glass that is physically accurate (optional, default off, creates more noise)
