@@ -1,3 +1,4 @@
+Changelog for Mineways' Cycles import script
 v1.2.0 alpha
 
 Fixed bug in transparentBlocks list
@@ -7,5 +8,5 @@ Removed excess and unnecessary textures
 Added HSV node for sky to correct colors in day
 Formatted README.txt
 Massive noise redution for night time scenes
-Tweaked brightness and roughness
+Tweaked brightness of light blocks and roughness of normal blocks
 Added optional displacement for wood
