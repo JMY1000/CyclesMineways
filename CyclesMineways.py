@@ -747,6 +747,7 @@ def main():
     print("Main started")
 
     #packing all the files into one .blend 
+    print("Packing files")
     bpy.ops.file.pack_all()
     print("Files packed")
     
@@ -759,7 +760,7 @@ def main():
         for w in USER_INPUT_SCENE:
             #Set the render engine to Cycles
             bpy.data.scenes[w].render.engine='CYCLES'
-    print("Render engine set to Cycles")
+    print("Render engine set to Cycles for selected scenes")
             
     
     try:
@@ -768,13 +769,12 @@ def main():
         print("Cannot find image. PREFIX is invalid.")
         return
     
+    print("Setting up textures")
     #for every material
     for material in bpy.data.materials:
         if material.active_texture:
             if len(material.active_texture.name)>=2:
                 if (material.active_texture.name[0:2]=="Kd"):
-                    #print that the material is now being worked on
-                    print("Started "+material.name)
                     material_suffix = material.name[material.name.rfind("."):len(material.name)] # gets the .001 .002 .003 ... of the material
                     try:
                         int(material_suffix[1:])
@@ -782,19 +782,19 @@ def main():
                         material_suffix=""
                     #if the material is transparent use a special shader
                     if any(material==bpy.data.materials.get(transparentBlock+material_suffix) for transparentBlock in transparentBlocks):
-                        print("Is transparent.")
+                        print(material.name+" is transparent.")
                         Transparent_Shader(material)
                     #if the material is a light emmitting block use a special shader
                     elif any(material==bpy.data.materials.get(lightBlock+material_suffix) for lightBlock in lightBlocks):
-                        print("Is light block.")
+                        print(material.name+" is light block.")
                         Light_Emiting_Shader(material)
                     #if the material is a light emmitting transparent block use a special shader
                     elif any(material==bpy.data.materials.get(lightTransparentBlocks+material_suffix) for lightTransparentBlocks in lightTransparentBlocks):
-                        print("Is transparent light block.")
+                        print(material.name+" is transparent light block.")
                         Transparent_Emiting_Shader(material)
                     #if the material is stationary water, use a special shader
                     elif material==bpy.data.materials.get("Stationary_Water"+material_suffix):
-                        print("Is water.")
+                        print(material.name+" is water.")
                         if WATER_SHADER_TYPE==0:
                             Normal_Shader(material)
                         elif WATER_SHADER_TYPE==1:
@@ -807,26 +807,25 @@ def main():
                             print("ERROR! COULD NOT SET UP WATER")
                     #if the material is flowing water, use a special shader
                     elif material==bpy.data.materials.get("Flowing_Water"+material_suffix):
-                        print("Is flowing water.")
+                        print(material.name+" is flowing water.")
                         pass
                     #if the material is slime, use a special shader
                     elif material==bpy.data.materials.get("Slime"+material_suffix):
-                        print("Is slime.")
+                        print(material.name+" is slime.")
                         Slime_Shader(material)
                     #if the material is ice, use a special shader
                     elif material==bpy.data.materials.get("Ice"+material_suffix):
-                        print("Is ice.")
+                        print(material.name+" is ice.")
                         Ice_Shader(material)
                     #if the material is wood and DISPLACE_WOOD is True
                     elif (material==bpy.data.materials.get("Oak_Wood_Planks"+material_suffix))and(DISPLACE_WOOD):
-                        print("Is displaced wooden planks.")
+                        print(material.name+" is displaced wooden planks.")
                         Wood_Displacement_Texture(material,texture_rgba_image)
                     #else use a normal shader
                     else:
-                        print("Is normal.")
+                        print(material.name+" is normal.")
                         Normal_Shader(material,texture_rgba_image)
-                    #print the material has finished
-                    print("Finished "+material.name)
+    print("Finished setting up materials")
         
     #Set up the sky
     print("Started shading sky")
@@ -866,10 +865,11 @@ def main():
 
 
 
-print("Started")
+print("\nStarted Cycles Mineways import script.\n")
     
     
 #importing the Blender Python library
 import bpy
 print("Libraries imported")
 main()
+print("\nCycles Mineways has finished.\n")
