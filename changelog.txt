@@ -7,3 +7,5 @@ Removed excess and unnecessary textures
 Added HSV node for sky to correct colors in day
 Formatted README.txt
 Massive noise redution for night time scenes
+Tweaked brightness and roughness
+Added optional displacement for wood
