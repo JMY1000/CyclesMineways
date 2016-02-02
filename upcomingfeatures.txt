@@ -6,7 +6,6 @@ Support for different weather types
 Builtin fire (Including optional ember particles (both real and minecraft-like (minecraft-like by default)))
 Restructure block metadata so it uses 2d array
 Lower noise lighting (using invisible light emitters that only show on diffuse rays)
-Increase diffuse on normal block textures (need to do a litle research on this beforehand)
 Remove the need for the PREFIX constant to be manual (This -should- be possible) (Automatic prefix detection)
 Colored glass uses its color for transparency
 
