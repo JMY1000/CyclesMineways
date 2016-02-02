@@ -2,11 +2,12 @@ Changelog for Mineways' Cycles import script
 v1.2.0 alpha
 
 Fixed bug in transparentBlocks list
-Improved print statements for debugging
-Added support for more scenes and input within the fields
-Removed excess and unnecessary textures
+Improved print statements for debugging (and for curious people, too!)
+Added support for more scenes using input in the code, intsead of in an input statement
+Removed unnecessary and excess textures
 Added HSV node for sky to correct colors in day
 Formatted README.txt
 Massive noise redution for night time scenes
-Tweaked brightness of light blocks and roughness of normal blocks
+Increased brightness of light blocks and roughness of normal blocks
 Added optional displacement for wood
+Materials that were not imported by Mineways are now no longer destroyed by the import process
