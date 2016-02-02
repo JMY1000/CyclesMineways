@@ -666,7 +666,7 @@ def Wood_Displacement_Texture(material,rgba_image):
     #Create the diffuse node
     diffuse_node=nodes.new('ShaderNodeBsdfDiffuse')
     diffuse_node.location=(0,300)
-    diffuse_node.inputs[1].default_value=0.3 # sets diffuse to 0.3 for all normal blocks
+    diffuse_node.inputs[1].default_value=0.3 # sets diffuse to 0.3
     #Create the rgba node
     rgba_node=nodes.new('ShaderNodeTexImage')
     rgba_node.image = rgba_image
@@ -677,10 +677,6 @@ def Wood_Displacement_Texture(material,rgba_image):
     #Create displacement node tree
     
     #Create magic node 1
-    #depth 3
-    #no vector
-    #scale 5
-    #distortion 1
     magic_node_one=nodes.new('ShaderNodeTexMagic')
     magic_node_one.location=(-900,200)
     magic_node_one.turbulence_depth=6 #sets depth to 6
@@ -688,10 +684,6 @@ def Wood_Displacement_Texture(material,rgba_image):
     magic_node_one.inputs[2].default_value=10 #sets distortion to 10
     
     #Create magic node 2
-    #depth 5
-    #no vector
-    #scale 3.3
-    #distortion 2.7
     magic_node_two=nodes.new('ShaderNodeTexMagic')
     magic_node_two.location=(-900,0)
     magic_node_two.turbulence_depth=5 #sets depth to 5
@@ -699,15 +691,12 @@ def Wood_Displacement_Texture(material,rgba_image):
     magic_node_two.inputs[2].default_value=2.7 #sets distortion to 2.7
     
     #Create Add node
-    #Connect to magic node 1 and 2
+    #Connects to magic node 1 and 2
     math_add_node_one=nodes.new('ShaderNodeMath')
     math_add_node_one.location=(-600,0)
     math_add_node_one.operation="ADD"
     
     #Create noise texture
-    #Scale 6.9
-    #Detail 5
-    #distortion 8
     noise_node=nodes.new('ShaderNodeTexNoise')
     noise_node.location=(-900,-200)
     noise_node.inputs[1].default_value=6.9 #sets scale to 6.9
@@ -715,25 +704,22 @@ def Wood_Displacement_Texture(material,rgba_image):
     noise_node.inputs[3].default_value=8 #sets distortion to 8
     
     #Create multiply
-    #connect to noise
-    #default value 5 for second
+    #Connects to noise and 5
     math_multiply_node=nodes.new('ShaderNodeMath')
     math_multiply_node.location=(-600,-200)
     math_multiply_node.operation="MULTIPLY"
     math_multiply_node.inputs[1].default_value=5 #sets multiply value to 5
     
     #Create 2nd Add node
-    #connect to Add node
-    #connect to multiply node
+    #Connects to Add node and multiply node
     math_add_node_two=nodes.new('ShaderNodeMath')
     math_add_node_two.operation="ADD"
     math_add_node_two.location=(-300,0)
     
     
     #Create Divide node
-    #connect from 2nd add
-    #set input [1] to 10
-    #connect to materials output
+    #Connect from 2nd add node and input [1] to 10
+    #Connects to materials output
     math_divide_node=nodes.new('ShaderNodeMath')
     math_divide_node.location=(0,150)
     math_divide_node.operation="DIVIDE"
