@@ -3,7 +3,7 @@ v1.2.0 alpha
 
 Fixed bug in transparentBlocks list
 Improved print statements for debugging (and for curious people, too!)
-Added support for more scenes using input in the code, intsead of in an input statement
+Added support for more scenes using input in the code, instead of in an input statement
 Removed unnecessary and excess textures
 Added HSV node for sky to correct colors in day
 Formatted README.txt
