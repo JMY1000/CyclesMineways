@@ -1,5 +1,5 @@
 Changelog for Mineways' Cycles import script
-v1.2.0 alpha
+Version 1.2.0
 
 Fixed bug in transparentBlocks list
 Improved print statements for debugging (and for curious people, too!)
