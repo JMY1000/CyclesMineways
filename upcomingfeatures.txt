@@ -1,10 +1,17 @@
 Animated textures (defaults from minecraft, also: grass, leaves, torches)
 Clouds (3d and 2d)
 Better lighting based on time of day
-Varying lighting intensity for different blocks
+Sprites for sun and moon
+Varying lighting intensity for different blocks (for example: torches are darker than glowstone)
 Support for different weather types
-Builtin fire
+Builtin fire (Including optional ember particles (both real and minecraft-like (minecraft-like by default)))
 Restructure block metadata so it uses 2d array
-Removing Alpha node and replacing with alpha channel of RGBA node
-Lower noise lighting
-Increase diffuse on grass texture
+Lower noise lighting (using invisible light emitters that only show on diffuse rays)
+Remove the need for the PREFIX constant to be manual (This -should- be possible) (Automatic prefix detection)
+Colored glass uses its color for transparency
+
+-- For when we have nothing else to do --
+"Real" fire using inbuilt fire engine (optional, default off)
+"Real" tall grass using inbuilt hair engine (optional, default off)
+"Real" low grass on grass (dirt) blocks using hair engine (optional, default off)
+Glass that is physically accurate (optional, default off, creates more noise)
