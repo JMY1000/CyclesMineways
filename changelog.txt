@@ -1,5 +1,5 @@
 Changelog for Mineways' Cycles import script
-Version 1.2.1 alpha
+Version 1.2.1
 
 1.9 support
 	Chorus, End Rod, End Stone Bricks (implied), Frosted Ice (implied), Grass Path (implied), Purpur Block (implied), Purpur Pillar (implied), Purpur Slabs (implied), Purpur Slabs (implied)
