@@ -1,13 +1,9 @@
 Changelog for Mineways' Cycles import script
-Version 1.2.0
+Version 1.2.1
 
-Fixed bug in transparentBlocks list
-Improved print statements for debugging (and for curious people, too!)
-Added support for more scenes using input in the code, instead of in an input statement
-Removed unnecessary and excess textures
-Added HSV node for sky to correct colors in day
-Formatted README.txt
-Massive noise redution for night time scenes
-Increased brightness of light blocks and roughness of normal blocks
-Added optional displacement for wood
-Materials that were not imported by Mineways are now no longer destroyed by the import process
+1.9 support
+	Chorus, End Rod, End Stone Bricks (implied), Frosted Ice (implied), Grass Path (implied), Purpur Block (implied), Purpur Pillar (implied), Purpur Slabs (implied), Purpur Slabs (implied)
+	Implied name indicates that the block was not explicitly added as it is a solid block.
+lightBlocks now includes Sea Lantern, Ender Chest, Jack o'Lantern, and Nether Portal
+lightTransparentBlocks now includes Beacon, Brown Mushroom, Dragon Egg, and Endframe
+Clarified comments and cleaned up formatting

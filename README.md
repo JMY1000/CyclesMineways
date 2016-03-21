@@ -2,7 +2,7 @@
 
 --------
 
-### Version 1.2.0, 1/25/16 ###
+### Version 1.2.1, 2/24/16 ###
 
 ### Copyright © 2016 Jonathan Edelman ###
 
