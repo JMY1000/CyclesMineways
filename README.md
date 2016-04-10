@@ -2,13 +2,13 @@
 
 --------
 
-### Version 1.2.1, 2/24/16 ###
+### Version 1.2.2, 4/10/16 ###
 
-### Copyright © 2016 Jonathan Edelman ###
+### Copyright © 2016 ###
 
+**Supports Minecraft 1.9.0 and Mineways 4.16**
 
-
-Please send suggestions or report bugs at jonathanedelman@mail.com or discuss at https://github.com/JMY1000/CyclesMineways/.
+Please send suggestions or report bugs at https://github.com/JMY1000/CyclesMineways/.
 
 --------
 
