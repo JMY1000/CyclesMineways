@@ -1,9 +1,4 @@
 Changelog for Mineways' Cycles import script
-Version 1.2.1
+Version 1.2.2
 
-1.9 support
-	Chorus, End Rod, End Stone Bricks (implied), Frosted Ice (implied), Grass Path (implied), Purpur Block (implied), Purpur Pillar (implied), Purpur Slabs (implied), Purpur Slabs (implied)
-	Implied name indicates that the block was not explicitly added as it is a solid block.
-lightBlocks now includes Sea Lantern, Ender Chest, Jack o'Lantern, and Nether Portal
-lightTransparentBlocks now includes Beacon, Brown Mushroom, Dragon Egg, and Endframe
-Clarified comments and cleaned up formatting
+Minor formatting updates
