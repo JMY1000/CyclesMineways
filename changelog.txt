@@ -2,3 +2,4 @@ Changelog for Mineways' Cycles import script
 Version 1.2.2
 
 Minor formatting updates
+Improved readability for comments at the top of the script
