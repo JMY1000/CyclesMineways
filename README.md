@@ -32,7 +32,7 @@ To the right of the "Help" menu in the upper left, click on the "keys" icon next
 Default" and pick "Scripting". Optionally, you can simply change any window to the text editor.
 
 At the bottom of the gray window you'll see a menu "Text"; click it and select "Open Text
-Block". Go to the directory where this file "cycles_mineways.py" is and select it. You should now
+Block". Go to the directory where this file "CyclesMineways.py" is and select it. You should now
 see some text in the gray window. Optionally, you can also paste in the text.
 
 To apply this script, click on the "Run Script" button at the bottom right of the text window.
