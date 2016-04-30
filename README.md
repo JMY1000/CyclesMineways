@@ -2,11 +2,11 @@
 
 --------
 
-### Version 1.2.2, 4/10/16 ###
+### Version 1.2.3, 4/11/16 ###
 
 ### Copyright © 2016 ###
 
-**Supports Minecraft 1.9.0 and Mineways 4.16**
+**Supports Minecraft 1.9.2 and Mineways 4.16**
 
 Please send suggestions or report bugs at https://github.com/JMY1000/CyclesMineways/.
 
