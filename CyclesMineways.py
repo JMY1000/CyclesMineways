@@ -27,13 +27,13 @@
 
 # At the bottom of the gray window you'll see a menu "Text"; click it and select "Open Text
 # Block". Go to the directory where this file "cycles_mineways.py" is and select it. You should now
-# see some text in the gray window. Optionally, you can also copy the enture text and paste in the text area.
+# see some text in the gray window. Optionally, you can also copy the entire code and paste in the text area.
 
 # To apply this script, click on the "Run Script" button at the bottom right of the text window.
 
 
 # OPTIONAL:
-# To see that the script did something, you may want to turn on the terminal.
+# To see that the script has, in fact, done something, you may want to turn on the terminal.
 
 # For most users:
 # From the upper left of your window select "Window" and then "Toggle System Console"
@@ -43,7 +43,8 @@
 # Navigate to Contents/MacOS/blender
 # Launch blender this way; this will show the terminal.
 
-# It isn't critical to see this window, but gives you a warm and fuzzy feeling that the script has worked. It also helps provide debug info if something goes wrong.
+# It is not critical to see this window, but it might give you a warm and fuzzy feeling to know that the script has worked.
+# It also helps provide debug info if something goes wrong.
 
 
 
