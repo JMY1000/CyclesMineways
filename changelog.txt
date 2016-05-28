@@ -1,4 +1,7 @@
 Changelog for Mineways' Cycles import script
-Version 1.2.2
+Version 1.2.3
 
 Minor formatting updates
+  Improved readability of comments at the top of the script
+  Various readme changes
+Corrected brightness of blocks
