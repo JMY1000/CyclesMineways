@@ -202,7 +202,7 @@ def Light_Emiting_Shader(material):
     #Create the Light Falloff node for indirect emission
     light_falloff_node=nodes.new('ShaderNodeLightFalloff')
     light_falloff_node.location=(-300,0)
-    light_falloff_node.inputs[0].default_value=1000 #sets strength of light
+    light_falloff_node.inputs[0].default_value=700 #sets strength of light
     light_falloff_node.inputs[1].default_value=0.05 #sets smooth level of light
     #Create the HSV node to brighten the light
     hsv_node=nodes.new('ShaderNodeHueSaturation')
