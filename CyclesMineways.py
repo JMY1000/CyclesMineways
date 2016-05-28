@@ -36,8 +36,8 @@
 # To see that the script has, in fact, done something, you may want to turn on the terminal.
 
 # For most users:
-# From the upper left of your window select "Window" and then "Toggle System Console"
-.
+# From the upper left of your window select "Window" and then "Toggle System Console".
+
 # For OS X:
 # Find your application, right click it, hit "Show Package Contents".
 # Navigate to Contents/MacOS/blender
