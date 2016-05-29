@@ -101,7 +101,7 @@ lightTransparentBlocks = ["Beacon","Brown_Mushroom","Dragon_Egg","Endframe","End
 
 #SHADERS
 
-def Normal_Shader(material,rgba_image):
+def Setup_Node_Tree(material):
     #Make the material use nodes
     material.use_nodes=True
     #Set the variable node_tree to be the material's node tree and variable nodes to be the node tree's nodes
@@ -110,9 +110,11 @@ def Normal_Shader(material,rgba_image):
     #Remove the old nodes
     for eachNode in nodes:
         nodes.remove(eachNode)
-    #commented out alt versions
-    #node_tree=bpy.data.materials[material].node_tree
-    #diffuse_node=nodes.get('ShaderNodeBsdfDiffuse')
+    return nodes,node_tree
+    
+
+def Normal_Shader(material,rgba_image):
+    nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
     output_node=nodes.new('ShaderNodeOutputMaterial')
     output_node.location=(300,300)
@@ -132,16 +134,7 @@ def Normal_Shader(material,rgba_image):
     link=links.new(diffuse_node.outputs["BSDF"],output_node.inputs["Surface"])
     
 def Transparent_Shader(material):
-    #Make the material use nodes
-    material.use_nodes=True
-    #Set the variable node_tree to be the material's node tree and variable nodes to be the node tree's nodes
-    node_tree=material.node_tree
-    nodes=material.node_tree.nodes
-    for eachNode in nodes:
-        nodes.remove(eachNode)
-    #commented out alt versions
-    #node_tree=bpy.data.materials[material].node_tree
-    #diffuse_node=nodes.get('ShaderNodeBsdfDiffuse')
+    nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
     output_node=nodes.new('ShaderNodeOutputMaterial')
     output_node.location=(300,300)
@@ -176,17 +169,7 @@ def Transparent_Shader(material):
     link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
     
 def Light_Emiting_Shader(material):
-    #Make the material use nodes
-    material.use_nodes=True
-    #Set the variable node_tree to be the material's node tree and variable nodes to be the node tree's nodes
-    node_tree=material.node_tree
-    nodes=material.node_tree.nodes
-    #Remove the old nodes
-    for eachNode in nodes:
-        nodes.remove(eachNode)
-    #commented out alt versions
-    #node_tree=bpy.data.materials[material].node_tree
-    #diffuse_node=nodes.get('ShaderNodeBsdfDiffuse')
+    nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
     output_node=nodes.new('ShaderNodeOutputMaterial')
     output_node.location=(600,300)
@@ -231,16 +214,7 @@ def Light_Emiting_Shader(material):
         pass
     
 def Transparent_Emiting_Shader(material):
-    #Make the material use nodes
-    material.use_nodes=True
-    #Set the variable node_tree to be the material's node tree and variable nodes to be the node tree's nodes
-    node_tree=material.node_tree
-    nodes=material.node_tree.nodes
-    for eachNode in nodes:
-        nodes.remove(eachNode)
-    #commented out alt versions
-    #node_tree=bpy.data.materials[material].node_tree
-    #diffuse_node=nodes.get('ShaderNodeBsdfDiffuse')
+    nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
     output_node=nodes.new('ShaderNodeOutputMaterial')
     output_node.location=(300,300)
@@ -275,16 +249,7 @@ def Transparent_Emiting_Shader(material):
     link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
 
 def Stationary_Water_Shader_1(material):
-    #Make the material use nodes
-    material.use_nodes=True
-    #Set the variable node_tree to be the material's node tree and variable nodes to be the node tree's nodes
-    node_tree=material.node_tree
-    nodes=material.node_tree.nodes
-    for eachNode in nodes:
-        nodes.remove(eachNode)
-    #commented out alt versions
-    #node_tree=bpy.data.materials[material].node_tree
-    #diffuse_node=nodes.get('ShaderNodeBsdfDiffuse')
+    nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
     output_node=nodes.new('ShaderNodeOutputMaterial')
     output_node.location=(300,300)
@@ -311,13 +276,7 @@ def Stationary_Water_Shader_1(material):
     link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
     
 def Stationary_Water_Shader_2(material):
-    #Make the material use nodes
-    material.use_nodes=True
-    #Set the variable node_tree to be the material's node tree and variable nodes to be the node tree's nodes
-    node_tree=material.node_tree
-    nodes=material.node_tree.nodes
-    for eachNode in nodes:
-        nodes.remove(eachNode)
+    nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
     output_node=nodes.new('ShaderNodeOutputMaterial')
     output_node.location=(300,300)
@@ -391,13 +350,7 @@ def Stationary_Water_Shader_2(material):
     link=links.new(texture_coordinate_node.outputs["Object"],voronoi_node_two.inputs["Vector"])
     
 def Stationary_Water_Shader_3(material):
-    #Make the material use nodes
-    material.use_nodes=True
-    #Set the variable node_tree to be the material's node tree and variable nodes to be the node tree's nodes
-    node_tree=material.node_tree
-    nodes=material.node_tree.nodes
-    for eachNode in nodes:
-        nodes.remove(eachNode)
+    nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
     output_node=nodes.new('ShaderNodeOutputMaterial')
     output_node.location=(300,300)
@@ -461,13 +414,7 @@ def Flowing_Water_Shader(material):
     material.use_nodes=True
     
 def Slime_Shader(material):
-    #Make the material use nodes
-    material.use_nodes=True
-    #Set the variable node_tree to be the material's node tree and variable nodes to be the node tree's nodes
-    node_tree=material.node_tree
-    nodes=material.node_tree.nodes
-    for eachNode in nodes:
-        nodes.remove(eachNode)
+    nodes, node_tree = Setup_Node_Tree(material)
     #commented out alt versions
     #node_tree=bpy.data.materials[material].node_tree
     #diffuse_node=nodes.get('ShaderNodeBsdfDiffuse')
@@ -497,13 +444,7 @@ def Slime_Shader(material):
     link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
 
 def Ice_Shader(material):
-    #Make the material use nodes
-    material.use_nodes=True
-    #Set the variable node_tree to be the material's node tree and variable nodes to be the node tree's nodes
-    node_tree=material.node_tree
-    nodes=material.node_tree.nodes
-    for eachNode in nodes:
-        nodes.remove(eachNode)
+    nodes, node_tree = Setup_Node_Tree(material)
     #commented out alt versions
     #node_tree=bpy.data.materials[material].node_tree
     #diffuse_node=nodes.get('ShaderNodeBsdfDiffuse')
@@ -536,13 +477,7 @@ def Stained_Glass_Shader(material):
     material.use_nodes=True
     
 def Sky_Day_Shader(world):
-    #Make the world use nodes
-    world.use_nodes=True
-    #Set the variable node_tree to be the world's node tree and variable nodes to be the node tree's nodes
-    node_tree=world.node_tree
-    nodes=world.node_tree.nodes
-    for eachNode in nodes:
-        nodes.remove(eachNode)
+    nodes, node_tree = Setup_Node_Tree(world)
     #Add the output node
     output_node=nodes.new('ShaderNodeOutputWorld')
     output_node.location=(300,300)
@@ -564,13 +499,7 @@ def Sky_Day_Shader(world):
     
 
 def Sky_Night_Shader(world):
-    #Make the world use nodes
-    world.use_nodes=True
-    #Set the variable node_tree to be the world's node tree and variable nodes to be the node tree's nodes
-    node_tree=world.node_tree
-    nodes=world.node_tree.nodes
-    for eachNode in nodes:
-        nodes.remove(eachNode)
+    nodes, node_tree = Setup_Node_Tree(world)
     #Add the output node
     output_node=nodes.new('ShaderNodeOutputWorld')
     output_node.location=(600,300)
@@ -677,14 +606,7 @@ def Sun_Shader():
 
 
 def Wood_Displacement_Texture(material,rgba_image):
-    #Make the material use nodes
-    material.use_nodes=True
-    #Set the variable node_tree to be the material's node tree and variable nodes to be the node tree's nodes
-    node_tree=material.node_tree
-    nodes=material.node_tree.nodes
-    #Remove the old nodes
-    for eachNode in nodes:
-        nodes.remove(eachNode)
+    nodes, node_tree = Setup_Node_Tree(material)
     #commented out alt versions
     #node_tree=bpy.data.materials[material].node_tree
     #diffuse_node=nodes.get('ShaderNodeBsdfDiffuse')
@@ -885,7 +807,7 @@ def main():
                 img.user_clear()
                 bpy.data.images.remove(img)
             else:
-                print("Texture "+img.name+" was not removed.")
+                print("Texture "+img.name+" was not removed because it is not one of Mineway's textures.")
     print("Finished removing unnecessary textures")
 
 
