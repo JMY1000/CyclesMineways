@@ -701,6 +701,25 @@ def main():
     bpy.ops.file.pack_all()
     print("Files packed")
     
+    #finding the PREFIX for mineways
+    global PREFIX
+    print("Gettting PREFIX ('"+PREFIX+"')")
+    
+    if PREFIX == "":
+        print("Finding best PREFIX")
+        names={}
+        for img in bpy.data.images:
+            pos = max(img.name.rfind("-RGBA.png"),img.name.rfind("-RGB.png"),img.name.rfind("-Alpha.png"))
+            print("checking:",img.name,pos,img.name[:pos])
+            if pos!=-1:
+                try:
+                    names[img.name[:pos]]+=1
+                except KeyError:
+                    names[img.name[:pos]]=1
+        print("names: ",names)
+        PREFIX = max(names)
+    print("Got PREFIX ('"+PREFIX+"')")
+    
     
     #Setting the render engine to Cycles
     if len(USER_INPUT_SCENE)==0:
@@ -807,7 +826,7 @@ def main():
                 img.user_clear()
                 bpy.data.images.remove(img)
             else:
-                print("Texture "+img.name+" was not removed because it is not one of Mineway's textures.")
+                print("Texture "+img.name+" was not removed because it is not one of Mineway's textures or is required for Mineways to work.")
     print("Finished removing unnecessary textures")
 
 
