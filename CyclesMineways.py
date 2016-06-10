@@ -721,14 +721,23 @@ def main():
     print("Got PREFIX ('"+PREFIX+"')")
     
     
-    #Setting the render engine to Cycles
+    #Setting the render engine to Cycles and filtering materials to change
+    print("Setting the render engine to Cycles and filtering materials to change")
+    materials = []
     if len(USER_INPUT_SCENE)==0:
         for scene in bpy.data.scenes:
             scene.render.engine = 'CYCLES'
+        for material in bpy.data.materials:
+            materials.append(material)
     else:
-        for w in USER_INPUT_SCENE:
-            #Set the render engine to Cycles
-            bpy.data.scenes[w].render.engine='CYCLES'
+        for scene in bpy.data.scenes:
+            print("checking for:",scene.name)
+            if scene.name in USER_INPUT_SCENE:
+                print("Adding materials from scene:",scene.name)
+                scene.render.engine='CYCLES'
+                for object in scene.objects:
+                    if object.active_materail!=None
+                        materials.append(object.active_material)
     print("Render engine set to Cycles for selected scenes")
             
     
@@ -738,9 +747,10 @@ def main():
         print("Cannot find image. PREFIX is invalid.")
         return
     
+    
     print("Setting up textures")
     #for every material
-    for material in bpy.data.materials:
+    for material in materials:
         if material.active_texture:
             if len(material.active_texture.name)>=2:
                 if (material.active_texture.name[0:2]=="Kd"):
