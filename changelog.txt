@@ -1,2 +1,6 @@
 Changelog for Mineways' Cycles import script
 Version 1.2.4
+
+PREFIX now no longer needs to be set
+  If you have imported 2 or more minecraft .obj files, or you are importing into a big .blend file, you still need to set the PREFIX or the scipt might get confused
+USER_INPUT_SCENE is now respected and objects from other scenes will not be affected by the scipt
