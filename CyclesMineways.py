@@ -736,7 +736,7 @@ def main():
                 print("Adding materials from scene:",scene.name)
                 scene.render.engine='CYCLES'
                 for object in scene.objects:
-                    if object.active_materail!=None
+                    if object.active_material!=None:
                         materials.append(object.active_material)
     print("Render engine set to Cycles for selected scenes")
             
