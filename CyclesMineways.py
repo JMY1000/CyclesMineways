@@ -836,7 +836,7 @@ def main():
                 img.user_clear()
                 bpy.data.images.remove(img)
             else:
-                print("Texture "+img.name+" was not removed because it is not one of Mineway's textures or is required for Mineways to work.")
+                print("Texture "+img.name+" was not removed.")
     print("Finished removing unnecessary textures")
 
 
