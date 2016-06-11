@@ -471,14 +471,21 @@ def Stationary_Water_Shader_5(material):
     #Create the mix+transparent mix shader
     mix_node_transparent_mix=nodes.new('ShaderNodeMixShader')
     mix_node_transparent_mix.location=(0,300)
-    mix_node_transparent_mix.inputs[0].default_value=0.24
+    mix_node_transparent_mix.inputs[0].default_value=0.18
     #Create the refraction-glossy mix shader
     mix_node_ref_glossy=nodes.new('ShaderNodeMixShader')
     mix_node_ref_glossy.location=(-300,0)
     mix_node_ref_glossy.inputs[0].default_value=0.72
+    #Create Diffuse-transparent mix shader
+    diffuse_transparent_mix_shader=nodes.new('ShaderNodeMixShader')
+    diffuse_transparent_mix_shader.location=(-300,450)
+    diffuse_transparent_mix_shader.inputs["Fac"].default_value = 0.5
     #Create the transparent node
     transparent_node=nodes.new('ShaderNodeBsdfTransparent')
-    transparent_node.location=(-300,300)
+    transparent_node.location=(-600,400)
+    #Create the diffuse node
+    diffuse_node=nodes.new('ShaderNodeBsdfDiffuse')
+    diffuse_node.location=(-600,550)
     #Create the glossy node
     glossy_node=nodes.new('ShaderNodeBsdfGlossy')
     glossy_node.location=(-600,0)
@@ -505,7 +512,7 @@ def Stationary_Water_Shader_5(material):
     #Create the first voronoi texture
     voronoi_node=nodes.new('ShaderNodeTexVoronoi')
     voronoi_node.location=(-600,-300)
-    voronoi_node.inputs[1].default_value=10
+    voronoi_node.inputs[1].default_value=20
     #Create the second multiply node
     multiply_node_two=nodes.new('ShaderNodeMath')
     multiply_node_two.location=(-600,-600)
@@ -513,7 +520,7 @@ def Stationary_Water_Shader_5(material):
     #Create the second voronoi texture
     voronoi_node_two=nodes.new('ShaderNodeTexVoronoi')
     voronoi_node_two.location=(-900,-600)
-    voronoi_node_two.inputs[1].default_value=20
+    voronoi_node_two.inputs[1].default_value=30
     #Create the texture coordinate node
     texture_coordinate_node=nodes.new('ShaderNodeTexCoord')
     texture_coordinate_node.location=(-1200,-300)
@@ -522,12 +529,15 @@ def Stationary_Water_Shader_5(material):
     link=links.new(fresnel_mix_node.outputs["Shader"],output_node.inputs["Surface"])
     link=links.new(fresnel_node.outputs["Fac"],fresnel_mix_node.inputs[0])
     link=links.new(mix_node_transparent_mix.outputs["Shader"],fresnel_mix_node.inputs[1])
-    link=links.new(transparent_node.outputs["BSDF"],mix_node_transparent_mix.inputs[1])
+    link=links.new(diffuse_transparent_mix_shader.outputs["Shader"],mix_node_transparent_mix.inputs[1])
+    link=links.new(diffuse_node.outputs["BSDF"],diffuse_transparent_mix_shader.inputs[1])
+    link=links.new(transparent_node.outputs["BSDF"],diffuse_transparent_mix_shader.inputs[2])
     link=links.new(mix_node_ref_glossy.outputs["Shader"],mix_node_transparent_mix.inputs[2])
     link=links.new(mix_node_ref_glossy.outputs["Shader"],fresnel_mix_node.inputs[2])
     link=links.new(refraction_node.outputs["BSDF"],mix_node_ref_glossy.inputs[1])
     link=links.new(glossy_node.outputs["BSDF"],mix_node_ref_glossy.inputs[2])
     link=links.new(rgba_node.outputs["Color"],refraction_node.inputs["Color"])
+    link=links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
     
     
     link=links.new(multiply_node.outputs["Value"],output_node.inputs["Displacement"])
