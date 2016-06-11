@@ -8,7 +8,6 @@ Builtin fire (Including optional ember particles (both real and minecraft-like (
 Restructure block metadata so it uses 2d array
 Lower noise lighting (using invisible light emitters that only show on diffuse rays)
 Colored glass uses its color for transparency
-Use Fresnel to make materials physically accurate (https://www.youtube.com/watch?v=4el81tT7x1Y)
 
 -- For when we have nothing else to do --
 toggleable import settings (all default off, unless stated otherwise)
