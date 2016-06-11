@@ -69,6 +69,7 @@ CLOUD_STATE = False
 #Use 1 for a semi-transparent shader.
 #Use 2 for a choppy shader.
 #Use 3 for a wavy shader.
+#Use 4 for a Fresnel based semi-transparent shader 
 WATER_SHADER_TYPE = 1
 #SKY_SHADER_TYPE controls the type of sky shader that will be used.
 #Use 0 for no shader.
@@ -409,6 +410,49 @@ def Stationary_Water_Shader_3(material):
     link=links.new(wave_node.outputs["Color"],rgbmix_node.inputs["Color2"])
     link=links.new(multiply_node.outputs["Value"],output_node.inputs["Displacement"])
     link=links.new(wave_node.outputs["Fac"],multiply_node.inputs[0])
+
+def Stationary_Water_Shader_4(material):
+    nodes, node_tree = Setup_Node_Tree(material)
+    #Create the output node
+    output_node=nodes.new('ShaderNodeOutputMaterial')
+    output_node.location=(300,300)
+    #Create the fresnel mix shader
+    fresnel_mix_node=nodes.new('ShaderNodeMixShader')
+    fresnel_mix_node.location=(0,300)
+    #Create Fresnel node ior=1.33
+    fresnel_node=nodes.new('ShaderNodeFresnel')
+    fresnel_node.location=(-300,400)
+    fresnel_node.inputs[0].default_value=1.33
+    #Create the transparency-diffuse mixer
+    mix_node=nodes.new('ShaderNodeMixShader')
+    mix_node.location=(-300,300)
+    mix_node.inputs[0].default_value=0.6
+    #Create the diffuse node
+    diffuse_node=nodes.new('ShaderNodeBsdfDiffuse')
+    diffuse_node.location=(-600,300)
+    #Create the transparent node
+    transparent_node=nodes.new('ShaderNodeBsdfTransparent')
+    transparent_node.location=(-600,180)
+    #Create the glossy shader
+    glossy_node=nodes.new('ShaderNodeBsdfGlossy')
+    glossy_node.location=(-600,100)
+    glossy_node.inputs[1].default_value=0.02
+    #Create the rgba node
+    rgba_node=nodes.new('ShaderNodeTexImage')
+    rgba_node.image = bpy.data.images[PREFIX+"-RGBA.png"]
+    rgba_node.interpolation=('Closest')
+    rgba_node.location=(-900,300)
+    rgba_node.label = "RGBA"
+    #Link the nodes
+    links=node_tree.links
+    link=links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
+    link=links.new(rgba_node.outputs["Color"],glossy_node.inputs["Color"])
+    link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[2])
+    link=links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[1])
+    link=links.new(fresnel_node.outputs["Fac"],fresnel_mix_node.inputs["Fac"])
+    link=links.new(mix_node.outputs["Shader"],fresnel_mix_node.inputs[1])
+    link=links.new(glossy_node.outputs["BSDF"],fresnel_mix_node.inputs[2])
+    link=links.new(fresnel_mix_node.outputs["Shader"],output_node.inputs["Surface"])
     
 def Flowing_Water_Shader(material):
     material.use_nodes=True
@@ -775,13 +819,15 @@ def main():
                     elif material==bpy.data.materials.get("Stationary_Water"+material_suffix):
                         print(material.name+" is water.")
                         if WATER_SHADER_TYPE==0:
-                            Normal_Shader(material)
+                            Normal_Shader(material,texture_rgba_image)
                         elif WATER_SHADER_TYPE==1:
                             Stationary_Water_Shader_1(material)
                         elif WATER_SHADER_TYPE==2:
                             Stationary_Water_Shader_2(material)
                         elif WATER_SHADER_TYPE==3:
                             Stationary_Water_Shader_3(material)
+                        elif WATER_SHADER_TYPE==4:
+                            Stationary_Water_Shader_4(material)
                         else:
                             print("ERROR! COULD NOT SET UP WATER")
                     #if the material is flowing water, use a special shader
