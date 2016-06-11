@@ -69,8 +69,9 @@ CLOUD_STATE = False
 #Use 1 for a semi-transparent shader.
 #Use 2 for a choppy shader.
 #Use 3 for a wavy shader.
-#Use 4 for a Fresnel based semi-transparent shader 
-WATER_SHADER_TYPE = 1
+#Use 4 for a Fresnel based semi-transparent shader
+#Use 5 for an all-in-one shader
+WATER_SHADER_TYPE = 5
 #SKY_SHADER_TYPE controls the type of sky shader that will be used.
 #Use 0 for no shader.
 #NOTE: This feature it not currently implemented.
@@ -454,6 +455,89 @@ def Stationary_Water_Shader_4(material):
     link=links.new(glossy_node.outputs["BSDF"],fresnel_mix_node.inputs[2])
     link=links.new(fresnel_mix_node.outputs["Shader"],output_node.inputs["Surface"])
     
+def Stationary_Water_Shader_5(material):
+    nodes, node_tree = Setup_Node_Tree(material)
+    #Create the output node
+    output_node=nodes.new('ShaderNodeOutputMaterial')
+    output_node.location=(600,300)
+    #Create the fresnel mix shader
+    fresnel_mix_node=nodes.new('ShaderNodeMixShader')
+    fresnel_mix_node.location=(300,300)
+    #mix_node.inputs["Fac"].default_value=(.1) now connects to fresnel
+    #Create Fresnel node
+    fresnel_node=nodes.new('ShaderNodeFresnel')
+    fresnel_node.location=(0,500)
+    fresnel_node.inputs[0].default_value=1.33
+    #Create the mix+transparent mix shader
+    mix_node_transparent_mix=nodes.new('ShaderNodeMixShader')
+    mix_node_transparent_mix.location=(0,300)
+    mix_node_transparent_mix.inputs[0].default_value=0.24
+    #Create the refraction-glossy mix shader
+    mix_node_ref_glossy=nodes.new('ShaderNodeMixShader')
+    mix_node_ref_glossy.location=(-300,0)
+    mix_node_ref_glossy.inputs[0].default_value=0.72
+    #Create the transparent node
+    transparent_node=nodes.new('ShaderNodeBsdfTransparent')
+    transparent_node.location=(-300,300)
+    #Create the glossy node
+    glossy_node=nodes.new('ShaderNodeBsdfGlossy')
+    glossy_node.location=(-600,0)
+    glossy_node.inputs["Roughness"].default_value=0.005
+    #Create the refraction node
+    refraction_node=nodes.new('ShaderNodeBsdfRefraction')
+    refraction_node.location=(-600,300)
+    refraction_node.inputs[2].default_value=1.33
+    #Create the rgba node
+    rgba_node=nodes.new('ShaderNodeTexImage')
+    rgba_node.image = bpy.data.images[PREFIX+"-RGBA.png"]
+    rgba_node.interpolation=('Closest')
+    rgba_node.location=(-900,300)
+    rgba_node.label = "RGBA"
+    #Create the first multiply node
+    multiply_node=nodes.new('ShaderNodeMath')
+    multiply_node.location=(0,-300)
+    multiply_node.operation=('MULTIPLY')
+    multiply_node.inputs[1].default_value=0.05
+    #Create the add node
+    add_node=nodes.new('ShaderNodeMath')
+    add_node.location=(-300,-300)
+    add_node.operation=('ADD')
+    #Create the first voronoi texture
+    voronoi_node=nodes.new('ShaderNodeTexVoronoi')
+    voronoi_node.location=(-600,-300)
+    voronoi_node.inputs[1].default_value=10
+    #Create the second multiply node
+    multiply_node_two=nodes.new('ShaderNodeMath')
+    multiply_node_two.location=(-600,-600)
+    multiply_node_two.operation=('MULTIPLY')
+    #Create the second voronoi texture
+    voronoi_node_two=nodes.new('ShaderNodeTexVoronoi')
+    voronoi_node_two.location=(-900,-600)
+    voronoi_node_two.inputs[1].default_value=20
+    #Create the texture coordinate node
+    texture_coordinate_node=nodes.new('ShaderNodeTexCoord')
+    texture_coordinate_node.location=(-1200,-300)
+    #Link the nodes
+    links=node_tree.links
+    link=links.new(fresnel_mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    link=links.new(fresnel_node.outputs["Fac"],fresnel_mix_node.inputs[0])
+    link=links.new(mix_node_transparent_mix.outputs["Shader"],fresnel_mix_node.inputs[1])
+    link=links.new(transparent_node.outputs["BSDF"],mix_node_transparent_mix.inputs[1])
+    link=links.new(mix_node_ref_glossy.outputs["Shader"],mix_node_transparent_mix.inputs[2])
+    link=links.new(mix_node_ref_glossy.outputs["Shader"],fresnel_mix_node.inputs[2])
+    link=links.new(refraction_node.outputs["BSDF"],mix_node_ref_glossy.inputs[1])
+    link=links.new(glossy_node.outputs["BSDF"],mix_node_ref_glossy.inputs[2])
+    link=links.new(rgba_node.outputs["Color"],refraction_node.inputs["Color"])
+    
+    
+    link=links.new(multiply_node.outputs["Value"],output_node.inputs["Displacement"])
+    link=links.new(add_node.outputs["Value"],multiply_node.inputs[0])
+    link=links.new(voronoi_node.outputs["Fac"],add_node.inputs[0])
+    link=links.new(multiply_node_two.outputs["Value"],add_node.inputs[1])
+    link=links.new(voronoi_node_two.outputs["Fac"],multiply_node_two.inputs[0])
+    link=links.new(texture_coordinate_node.outputs["Object"],voronoi_node.inputs["Vector"])
+    link=links.new(texture_coordinate_node.outputs["Object"],voronoi_node_two.inputs["Vector"])
+
 def Flowing_Water_Shader(material):
     material.use_nodes=True
     
@@ -828,6 +912,8 @@ def main():
                             Stationary_Water_Shader_3(material)
                         elif WATER_SHADER_TYPE==4:
                             Stationary_Water_Shader_4(material)
+                        elif WATER_SHADER_TYPE==5:
+                            Stationary_Water_Shader_5(material)
                         else:
                             print("ERROR! COULD NOT SET UP WATER")
                     #if the material is flowing water, use a special shader
