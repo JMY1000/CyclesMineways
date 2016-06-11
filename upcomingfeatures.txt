@@ -14,8 +14,8 @@ toggleable import settings (all default off, unless stated otherwise)
   "Real" fire using inbuilt fire engine
   "Real" tall grass using inbuilt hair engine
   "Real" low grass on grass (dirt) blocks using hair engine
-  "Real" Clouds
-  "Real" Glass that is physically accurate
+  "Real" clouds
+  "Real" class that is physically accurate
 
 
 -- Suggestions for Mineways that can't realistically be done just with python scripting
