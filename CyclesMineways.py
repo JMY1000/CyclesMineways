@@ -89,12 +89,16 @@ LAVA_ANIMATION = False
 #NOTE: This currently only works for oak wood planks.
 #NOTE: This can only be True or False
 DISPLACE_WOOD = False
+#STAINED_GLASS_COLOR controls how coloured the light that passed through stained glass is.
+#0 means light passed through unchanged
+#1 means all the light is changed to the glass's color (not recommended)
+STAINED_GLASS_COLOR = 0.2
 
 #List of transparent blocks
 transparentBlocks = ["Acacia_Leaves","Dark_Oak_Leaves","Acacia_Door","Activator_Rail","Bed","Birch_Door","Brewing_Stand","Cactus","Carrot","Carrots","Cauldron","Chorus_Flower","Chorus_Flower_Dead","Chorus_Plant","Cobweb",
     "Cocoa","Crops","Dandelion","Dark_Oak_Door","Dead_Bush","Detector_Rail","Enchantment_Table","Glass","Glass_Pane","Grass","Iron_Bars","Iron_Door","Iron_Trapdoor","Jack_o'Lantern","Jungle_Door","Large_Flower",
     "Leaves","Lily_Pad","Melon_Stem","Monster_Spawner","Nether_Portal","Nether_Wart","Oak_Leaves","Oak_Sapling","Poppy","Potato","Potatoes","Powered_Rail","Powered_Rail_(off)","Pumpkin_Stem","Rail","Red_Mushroom",
-    "Redstone_Comparator_(off)","Redstone_Torch_(off)","Repeater_(off)","Sapling","Spruce_Door","Stained_Glass","Sugar_Cane","Sunflower","Tall_Grass","Trapdoor","Vines","Wheat","Wooden_Door"]
+    "Redstone_Comparator_(off)","Redstone_Torch_(off)","Repeater_(off)","Sapling","Spruce_Door","Sugar_Cane","Sunflower","Tall_Grass","Trapdoor","Vines","Wheat","Wooden_Door"]
 #List of light emitting blocks
 lightBlocks = ["End_Portal","Ender_Chest","Flowing_Lava","Glowstone","Redstone_Lamp_(on)","Stationary_Lava","Sea_Lantern"]
 #List of light emitting and transparent block
@@ -155,17 +159,10 @@ def Transparent_Shader(material):
     rgba_node.interpolation=('Closest')
     rgba_node.location=(-600,300)
     rgba_node.label = "RGBA"
-    #Create the alpha node
-    #alpha_node=nodes.new('ShaderNodeTexImage')
-    #alpha_node.image = bpy.data.images[PREFIX+"-Alpha.png"]
-    #alpha_node.interpolation=('Closest')
-    #alpha_node.location=(-600,0)
-    #alpha_node.label = "Alpha"
     #Link the nodes
     links=node_tree.links
     link=links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
     link=links.new(rgba_node.outputs["Alpha"],mix_node.inputs["Fac"])
-    #link=links.new(alpha_node.outputs["Color"],mix_node.inputs["Fac"])
     link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
     link=links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
     link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
@@ -235,19 +232,63 @@ def Transparent_Emiting_Shader(material):
     rgba_node.interpolation=('Closest')
     rgba_node.location=(-600,300)
     rgba_node.label = "RGBA"
-    #Create the alpha node
-    #alpha_node=nodes.new('ShaderNodeTexImage')
-    #alpha_node.image = bpy.data.images[PREFIX+"-Alpha.png"]
-    #alpha_node.interpolation=('Closest')
-    #alpha_node.location=(-600,0)
-    #alpha_node.label = "Alpha"
     #Link the nodes
     links=node_tree.links
     link=links.new(rgba_node.outputs["Color"],emission_node.inputs["Color"])
     link=links.new(rgba_node.outputs["Alpha"],mix_node.inputs["Fac"])
-    #link=links.new(alpha_node.outputs["Color"],mix_node.inputs["Fac"])
     link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
     link=links.new(emission_node.outputs["Emission"],mix_node.inputs[2])
+    link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    
+def Stained_Glass_Shader(material):
+    nodes, node_tree = Setup_Node_Tree(material)
+    #Create the output node
+    output_node=nodes.new('ShaderNodeOutputMaterial')
+    output_node.location=(300,300)
+    #Create the mix shader
+    mix_node=nodes.new('ShaderNodeMixShader')
+    mix_node.location=(0,300)
+    #Create the transparent node
+    transparent_node=nodes.new('ShaderNodeBsdfTransparent')
+    transparent_node.location=(-300,400)
+    #Create shadow(math)-color(HSV) mix node
+    shadow_color_mix_node=nodes.new('ShaderNodeMixRGB')
+    shadow_color_mix_node.location=(-600,400)
+    shadow_color_mix_node.inputs[1].default_value=(1,1,1,0)
+    #Create HSV node because for some reason color from the RGBA node in transparent nodes is super dark
+    hsv_node=nodes.new('ShaderNodeHueSaturation')
+    hsv_node.location=(-900,280)
+    hsv_node.inputs[1].default_value=2
+    hsv_node.inputs[2].default_value=8
+    #Create math(multiply) node
+    multiply_node=nodes.new('ShaderNodeMath')
+    multiply_node.location=(-900,450)
+    multiply_node.operation=('MULTIPLY')
+    multiply_node.use_clamp=True
+    multiply_node.inputs[1].default_value=STAINED_GLASS_COLOR
+    #Create the lightpath node
+    light_path_node=nodes.new('ShaderNodeLightPath')
+    light_path_node.location=(-1200,450)
+    #Create the diffuse node
+    diffuse_node=nodes.new('ShaderNodeBsdfDiffuse')
+    diffuse_node.location=(-900,0)
+    #Create the rgba node
+    rgba_node=nodes.new('ShaderNodeTexImage')
+    rgba_node.image = bpy.data.images[PREFIX+"-RGBA.png"]
+    rgba_node.interpolation=('Closest')
+    rgba_node.location=(-1200,100)
+    rgba_node.label = "RGBA"
+    #Link the nodes
+    links=node_tree.links
+    link=links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
+    link=links.new(rgba_node.outputs["Alpha"],mix_node.inputs["Fac"])
+    link=links.new(rgba_node.outputs["Color"],hsv_node.inputs["Color"])
+    link=links.new(light_path_node.outputs[1],multiply_node.inputs[0]) #connects Is Shadow Ray to multiply node
+    link=links.new(multiply_node.outputs["Value"],shadow_color_mix_node.inputs["Fac"])
+    link=links.new(hsv_node.outputs["Color"],shadow_color_mix_node.inputs[2])
+    link=links.new(shadow_color_mix_node.outputs["Color"],transparent_node.inputs["Color"])
+    link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
+    link=links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
     link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
 
 def Stationary_Water_Shader_1(material):
@@ -611,9 +652,6 @@ def Ice_Shader(material):
     link=links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
     link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
     
-def Stained_Glass_Shader(material):
-    material.use_nodes=True
-    
 def Sky_Day_Shader(world):
     nodes, node_tree = Setup_Node_Tree(world)
     #Add the output node
@@ -909,6 +947,10 @@ def main():
                     elif any(material==bpy.data.materials.get(lightTransparentBlocks+material_suffix) for lightTransparentBlocks in lightTransparentBlocks):
                         print(material.name+" is transparent light block.")
                         Transparent_Emiting_Shader(material)
+                    #if the material is stained glass, use a special shader
+                    elif material==bpy.data.materials.get("Stained_Glass"+material_suffix):
+                        print(material.name+" is stained glass.")
+                        Stained_Glass_Shader(material)
                     #if the material is stationary water, use a special shader
                     elif material==bpy.data.materials.get("Stationary_Water"+material_suffix):
                         print(material.name+" is water.")
