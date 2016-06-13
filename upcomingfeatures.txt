@@ -2,7 +2,7 @@ Varying lighting intensity for different blocks (for example: glowstone is brigh
 Better lighting based on time of day
   background light brightest during mid day
   background light darkest during mid night
-  night time stars are currently static, this will look very weird in an animation where the camera moves
+  night time stars are currently static, this looks very weird in an animation where the camera moves
 Sprites for sun and moon
   Requires access to texture files that aren't currently provided
   The scipt could just use a 2d circle, make it super bright and far away
@@ -16,30 +16,36 @@ Restructuring block metadata
   Needs to take into account that different materials have different fresnel values
     do note: all materials in the real world have fresnel, not just shiney ones
 Lower noise lighting (using invisible light emitters that only show on diffuse rays)
+  On light blocks that do not take up the entire block space:
+     Need to use invisible light emitters that only show in shadows
   Requires knowledge of how Cycles works and how to reduce noise
     one massive factor in noise, is using mix nodes set to values very close, but not quite, to 0 or 1
-  Might require using geometry for blocks that do not take up the entire area
 Support for connected textures
   Requires texture files not currently passed by Mineways
+  This will likely be an all-mineways addtion (no extra python scripting)
 Clouds (2D and 3D)
+  2D and 3D, Minexrafty and "real"
   Difficult to understand and write
     The way how light reflects off clouds in the real world is very complex
     The way how minecraft's clouds are formed shouldn't be too hard node-tree wise
-  Will require changing geometry
-Animated textures (defaults from Minecraft as provided by the resource pack, also: grass, leaves, torches)
+  Will likely require changing geometry
+Animated textures
+  Defaults from Minecraft
+  Grass, leaves, fire, and torches will need animations
   Difficult to structure
-  Requires access to animated texture files which isn't currently provided
+  Might require access to animated texture files which isn't currently provided
   Requires scripting of parts of the engine not yet explored (timeline)
 Support for different weather types
   Difficult to understand and write
-  Water sources need to be placed somewhere, user might not like where it was placed
+  Rain sources need to be placed somewhere, user might not like where it was placed by default
   Might require scripting of parts of the engine not yet explored (particles)
 Better fire including embers, in the spirit of both Minecraft and real fire using the builtin engine
   Difficult to understand and write
     setting up fire in blender is overly complex node-tree wise at the moment; will requre lots of work
   Likely require changing geometry
-  Requires scripting of parts of the engine not yet explored (particles)
+  Requires scripting of parts of the engine not yet explored (particles, smoke(fire))
 Better grass using inbuilt hair engine
   when the user scales their world model, the hair will not go with it
 Importing other models (such as characters and mobs)
-  Requires large amounts of information not currently conveyed by Mineways
+  Requires large amounts of information not currently passed by Mineways
+  A lot of work on Mineways' end
