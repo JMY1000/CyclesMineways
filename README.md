@@ -48,7 +48,7 @@ From the upper left of your window select "Window" and then "Toggle System Conso
 For OS X:
 Find your application, right click it, hit "Show Package Contents".
 Navigate to Contents/MacOS/blender
-Launch blender this way; this will show the terminal.
+Launch blender this way, this will show the terminal.
 
 For Linux:
 Run Blender through the terminal.
