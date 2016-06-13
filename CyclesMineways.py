@@ -9,44 +9,34 @@
 
 # Distributed with Mineways, http://mineways.com
 
-# How to use:
-# First, you must edit this script a tiny bit. You need to change the PREFIX value listed in the
-# CONSTANTS section. Change PREFIX="" to whatever your save file name is. For example, if it's
-# castle.obj, then do this:
-# PREFIX="castle"
-# Optionally, you can change the other constants to customise what this script will do.
-# Desriptions of what constant does can be found above each constant.
-# Note that some features are not yet implemented.
-# Any constant that is not yet used will have a note stating that it is not implemented.
+#To use the script within Blender, for use with the Cycles renderer:
 
+#Open Blender and import the obj file created by Mineways.
 
-# To use the script within Blender, for use with the Cycles renderer:
+#Change any window to the text editor.
+#Alternatively, Go to the top of the window where it says "Default",
+#click on the screen layout button left to the word "Default" and pick "Scripting".
 
-# To the right of the "Help" menu in the upper left, click on the "keys" icon next to the word
-#"Default" and pick "Scripting". Optionally, you can simply change any window to the text editor.
+#Click "Open" at the bottom of the text window.
+#Go to the directory where this file, "CyclesMineways.py", is and select it.
+#You should now see some text in the text window.
+#Alternatively, you can click "new" then paste in the text.
 
-# At the bottom of the gray window you'll see a menu "Text"; click it and select "Open Text
-# Block". Go to the directory where this file "cycles_mineways.py" is and select it. You should now
-# see some text in the gray window. Optionally, you can also copy the entire code and paste in the text area.
+#To apply this script, click on the "Run Script" button at the bottom of the text window.
 
-# To apply this script, click on the "Run Script" button at the bottom right of the text window.
+#OPTIONAL: To see that the script's print output, you may want to turn on the terminal/console.
+#It is not critical to see this window, but it might give you a warm and fuzzy feeling to know that the script has worked.
+#It also helps provide debug info if something goes wrong.
 
+#For Windows:
+#From the upper left of your window select "Window" and then "Toggle System Console".
 
-# OPTIONAL:
-# To see that the script has, in fact, done something, you may want to turn on the terminal.
+#For OS X:
+#Find your application, right click it, hit "Show Package Contents".
+#Navigate to Contents/MacOS/blender Launch blender this way, this will show the terminal.
 
-# For most users:
-# From the upper left of your window select "Window" and then "Toggle System Console".
-
-# For OS X:
-# Find your application, right click it, hit "Show Package Contents".
-# Navigate to Contents/MacOS/blender
-# Launch blender this way; this will show the terminal.
-
-# It is not critical to see this window, but it might give you a warm and fuzzy feeling to know that the script has worked.
-# It also helps provide debug info if something goes wrong.
-
-
+#For Linux:
+#Run Blender through the terminal.
 
 
 #CONSTANTS
