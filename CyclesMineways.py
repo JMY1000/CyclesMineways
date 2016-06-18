@@ -61,7 +61,7 @@ CLOUD_STATE = False
 #Use 3 for a wavy shader.
 #Use 4 for a Fresnel based semi-transparent shader
 #Use 5 for an all-in-one shader
-WATER_SHADER_TYPE = 5
+WATER_SHADER_TYPE = 4
 #SKY_SHADER_TYPE controls the type of sky shader that will be used.
 #Use 0 for no shader.
 #NOTE: This feature it not currently implemented.
@@ -87,7 +87,7 @@ STAINED_GLASS_COLOR = 0.2
 #List of transparent blocks
 transparentBlocks = ["Acacia_Leaves","Dark_Oak_Leaves","Acacia_Door","Activator_Rail","Bed","Birch_Door","Brewing_Stand","Cactus","Carrot","Carrots","Cauldron","Chorus_Flower","Chorus_Flower_Dead","Chorus_Plant","Cobweb",
     "Cocoa","Crops","Dandelion","Dark_Oak_Door","Dead_Bush","Detector_Rail","Enchantment_Table","Glass","Glass_Pane","Grass","Iron_Bars","Iron_Door","Iron_Trapdoor","Jack_o'Lantern","Jungle_Door","Large_Flower",
-    "Leaves","Lily_Pad","Melon_Stem","Monster_Spawner","Nether_Portal","Nether_Wart","Oak_Leaves","Oak_Sapling","Poppy","Potato","Potatoes","Powered_Rail","Powered_Rail_(off)","Pumpkin_Stem","Rail","Red_Mushroom",
+    "Leaves","Melon_Stem","Monster_Spawner","Nether_Portal","Nether_Wart","Oak_Leaves","Oak_Sapling","Poppy","Potato","Potatoes","Powered_Rail","Powered_Rail_(off)","Pumpkin_Stem","Rail","Red_Mushroom",
     "Redstone_Comparator_(off)","Redstone_Torch_(off)","Repeater_(off)","Sapling","Spruce_Door","Sugar_Cane","Sunflower","Tall_Grass","Trapdoor","Vines","Wheat","Wooden_Door"]
 #List of light emitting blocks
 lightBlocks = ["End_Portal","Ender_Chest","Flowing_Lava","Glowstone","Redstone_Lamp_(on)","Stationary_Lava","Sea_Lantern"]
@@ -229,6 +229,47 @@ def Transparent_Emiting_Shader(material):
     link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
     link=links.new(emission_node.outputs["Emission"],mix_node.inputs[2])
     link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    
+def Lily_Pad_Shader(material):
+    #A water setup shader should have ran before this
+    #Set the variable node_tree to be the material's node tree and variable nodes to be the node tree's nodes
+    node_tree=material.node_tree
+    nodes=material.node_tree.nodes
+    
+    output = None
+    image_node = None
+    for node in nodes:
+        if node.name=="Material Output":
+            output=node
+        if node.name=="Image Texture": #assumes only 1 image input
+            image_node=node
+    output.location = (600,300)
+    water_output = output.inputs[0].links[0].from_node
+    
+    mix_node = nodes.new('ShaderNodeMixShader')
+    mix_node.location=(300,500)
+    
+    diffuse_node = nodes.new('ShaderNodeBsdfDiffuse')
+    diffuse_node.location=(0,500)
+    
+    RGB_splitter_node = nodes.new('ShaderNodeSeparateRGB')
+    RGB_splitter_node.location=(-300,700)
+    
+    less_than_node = nodes.new('ShaderNodeMath')
+    less_than_node.location=(0,700)
+    less_than_node.operation="LESS_THAN"
+    less_than_node.inputs[1].default_value=0.3 #magic number that works for filtering
+    
+    
+    links=node_tree.links
+    link = links.new(mix_node.outputs[0],output.inputs[0])
+    link = links.new(diffuse_node.outputs[0],mix_node.inputs[1])
+    link = links.new(water_output.outputs[0],mix_node.inputs[2]) #making massive assumption that output of water is in first output
+    link = links.new(less_than_node.outputs[0],mix_node.inputs[0])
+    link = links.new(image_node.outputs[0],diffuse_node.inputs[0])
+    link = links.new(RGB_splitter_node.outputs[2],less_than_node.inputs[0])
+    link = links.new(image_node.outputs[0],RGB_splitter_node.inputs[0])
+    
     
 def Stained_Glass_Shader(material):
     nodes, node_tree = Setup_Node_Tree(material)
@@ -941,9 +982,9 @@ def main():
                     elif material==bpy.data.materials.get("Stained_Glass"+material_suffix):
                         print(material.name+" is stained glass.")
                         Stained_Glass_Shader(material)
-                    #if the material is stationary water, use a special shader
-                    elif material==bpy.data.materials.get("Stationary_Water"+material_suffix):
-                        print(material.name+" is water.")
+                    #if the material is stationary water or a lily pad, use a special shader
+                    elif material==bpy.data.materials.get("Stationary_Water"+material_suffix) or material==bpy.data.materials.get("Lily_Pad"+material_suffix):
+                        print(material.name+" is water or a lily pad.")
                         if WATER_SHADER_TYPE==0:
                             Normal_Shader(material,texture_rgba_image)
                         elif WATER_SHADER_TYPE==1:
@@ -958,6 +999,8 @@ def main():
                             Stationary_Water_Shader_5(material)
                         else:
                             print("ERROR! COULD NOT SET UP WATER")
+                        if material==bpy.data.materials.get("Lily_Pad"+material_suffix):
+                            Lily_Pad_Shader(material)
                     #if the material is flowing water, use a special shader
                     elif material==bpy.data.materials.get("Flowing_Water"+material_suffix):
                         print(material.name+" is flowing water.")
