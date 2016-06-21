@@ -9,79 +9,68 @@
 
 # Distributed with Mineways, http://mineways.com
 
-#To use the script within Blender, for use with the Cycles renderer:
+# To use the script within Blender, for use with the Cycles renderer:
 
-#Open Blender and import the obj file created by Mineways.
+# Open Blender and import the obj file created by Mineways.
 
-#Change any window to the text editor.
-#Alternatively, Go to the top of the window where it says "Default",
-#click on the screen layout button left to the word "Default" and pick "Scripting".
+# Change any window to the text editor.
+# Alternatively, Go to the top of the window where it says "Default",
+# click on the screen layout button left to the word "Default" and pick "Scripting".
 
-#Click "Open" at the bottom of the text window.
-#Go to the directory where this file, "CyclesMineways.py", is and select it.
-#You should now see some text in the text window.
-#Alternatively, you can click "new" then paste in the text.
+# Click "Open" at the bottom of the text window.
+# Go to the directory where this file, "CyclesMineways.py", is and select it.
+# You should now see some text in the text window.
+# Alternatively, you can click "new" then paste in the text.
 
-#To apply this script, click on the "Run Script" button at the bottom of the text window.
+# To apply this script, click on the "Run Script" button at the bottom of the text window.
 
-#OPTIONAL: To see that the script's print output, you may want to turn on the terminal/console.
-#It is not critical to see this window, but it might give you a warm and fuzzy feeling to know that the script has worked.
-#It also helps provide debug info if something goes wrong.
+# OPTIONAL: To see that the script's print output, you may want to turn on the terminal/console.
+# It is not critical to see this window, but it might give you a warm and fuzzy feeling to know that the script has worked.
+# It also helps provide debug info if something goes wrong.
 
-#For Windows:
-#From the upper left of your window select "Window" and then "Toggle System Console".
+# For Windows:
+# From the upper left of your window select "Window" and then "Toggle System Console".
 
-#For OS X:
-#Find your application, right click it, hit "Show Package Contents".
-#Navigate to Contents/MacOS/blender Launch blender this way, this will show the terminal.
+# For OS X:
+# Find your application, right click it, hit "Show Package Contents".
+# Navigate to Contents/MacOS/blender Launch blender this way, this will show the terminal.
 
-#For Linux:
-#Run Blender through the terminal.
-
-
-#CONSTANTS
+# For Linux:
+# Run Blender through the terminal.
 
 
-#PREFIX must be set by the user to allow this script to know what it is working with.
-#Set the PREFIX to the name of the file it uses (eg: a castle.obj file uses PREFIX = "castle")
+# CONSTANTS
+
+# PREFIX can stay as "" if you are importing into project that is not massive and has no other imported mineways worlds.
+# If the .blend does not meet these requirements, you must set PREFIX to allow this script to know what it is working with.
+# Set the PREFIX to the name of the file it uses (eg: a castle.obj file uses PREFIX = "castle")
 PREFIX = ""
-#USER_INPUT_SCENE controls what scenes Blender will apply this script's functionality to.
-#If this list has scenes, the script only use those scenes to work with;
-#otherwise, it will use all scenes
-#example: USER_INPUT_SCENE = ["scene","scene2","randomScene123"]
+# USER_INPUT_SCENE controls what scenes Blender will apply this script's functionality to.
+# If this list has scenes, the script only use those scenes to work with;
+# otherwise, it will use all scenes
+# example: USER_INPUT_SCENE = ["scene","scene2","randomScene123"]
 USER_INPUT_SCENE = []
-#CLOUD_STATE, either True or False
-#NOTE: This feature it not currently implemented.
-#NOTE: This can only be True or False (but it doesn't matter as this constant is never used).
-CLOUD_STATE = False
-#WATER_SHADER_TYPE controls the water shader that will be used.
-#Use 0 for a solid block shader.
-#Use 1 for a semi-transparent shader.
-#Use 2 for a choppy shader.
-#Use 3 for a wavy shader.
-#Use 4 for a Fresnel based semi-transparent shader
-#Use 5 for an all-in-one shader
+# WATER_SHADER_TYPE controls the water shader that will be used.
+# Use 0 for a solid block shader.
+# Use 1 for a semi-transparent shader.
+# Use 2 for a choppy shader.
+# Use 3 for a wavy shader.
+# Use 4 for a Fresnel based semi-transparent shader
+# Use 5 for an all-in-one shader
 WATER_SHADER_TYPE = 4
-#SKY_SHADER_TYPE controls the type of sky shader that will be used.
-#Use 0 for no shader.
-#NOTE: This feature it not currently implemented.
-SKY_SHADER_TYPE = 0
-#TIME_OF_DAY controls the time of day.
-#If TIME_OF_DAY is between 6.5 and 19.5 (crossing 12), the daytime shader will be used.
-#If TIME_OF_DAY is between 19.5 and 6.5 (crossing 24), the nighttim shader will be used.
-#NOTE: The decimal is not in minutes, and is a fraction (ex. 12:30 is 12.50).
-#NOTE: This currently only handles day and night
+# TIME_OF_DAY controls the time of day.
+# If TIME_OF_DAY is between 6.5 and 19.5 (crossing 12), the daytime shader will be used.
+# If TIME_OF_DAY is between 19.5 and 6.5 (crossing 24), the nighttim shader will be used.
+# NOTE: The decimal is not in minutes, and is a fraction (ex. 12:30 is 12.50).
+# NOTE: This currently only handles day and night
 TIME_OF_DAY = 12.00
-#LAVA_ANIMATION controls whether lava is animated.
-#NOTE: This feature is not currently implemented.
-LAVA_ANIMATION = False
-#DISPLACE_WOOD controls whether virtual displacement (changes normals for illusion of roughness) for wooden plank blocks is used.
-#NOTE: This currently only works for oak wood planks.
-#NOTE: This can only be True or False
+# DISPLACE_WOOD controls whether virtual displacement (changes normals for illusion of roughness) for wooden plank blocks is used.
+# NOTE: This currently only works for oak wood planks.
+# NOTE: This can only be True or False
 DISPLACE_WOOD = False
-#STAINED_GLASS_COLOR controls how coloured the light that passed through stained glass is.
-#0 means light passed through unchanged
-#1 means all the light is changed to the glass's color (not recommended)
+# STAINED_GLASS_COLOR controls how coloured the light that passed through stained glass is.
+# 0 means light passed through unchanged
+# 1 means all the light is changed to the glass's color (not recommended)
 STAINED_GLASS_COLOR = 0.2
 
 #List of transparent blocks
@@ -126,8 +115,8 @@ def Normal_Shader(material,rgba_image):
     rgba_node.label = "RGBA"
     #Link the nodes
     links=node_tree.links
-    link=links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
-    link=links.new(diffuse_node.outputs["BSDF"],output_node.inputs["Surface"])
+    links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
+    links.new(diffuse_node.outputs["BSDF"],output_node.inputs["Surface"])
     
 def Transparent_Shader(material):
     nodes, node_tree = Setup_Node_Tree(material)
@@ -151,11 +140,11 @@ def Transparent_Shader(material):
     rgba_node.label = "RGBA"
     #Link the nodes
     links=node_tree.links
-    link=links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
-    link=links.new(rgba_node.outputs["Alpha"],mix_node.inputs["Fac"])
-    link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
-    link=links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
-    link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
+    links.new(rgba_node.outputs["Alpha"],mix_node.inputs["Fac"])
+    links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
+    links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
+    links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
     
 def Light_Emiting_Shader(material):
     nodes, node_tree = Setup_Node_Tree(material)
@@ -191,14 +180,14 @@ def Light_Emiting_Shader(material):
     rgba_node.label = "RGBA"
     #Link the nodes
     links=node_tree.links
-    link=links.new(rgba_node.outputs["Color"],direct_emission_node.inputs["Color"])
-    link=links.new(rgba_node.outputs["Color"],hsv_node.inputs["Color"])
-    link=links.new(hsv_node.outputs["Color"],indirect_emission_node.inputs["Color"])
-    link=links.new(light_falloff_node.outputs[1],indirect_emission_node.inputs[1]) #connects linear output to emission strength
-    link=links.new(indirect_emission_node.outputs["Emission"],diffuse_mix_node.inputs[2])
-    link=links.new(direct_emission_node.outputs["Emission"],diffuse_mix_node.inputs[1])
-    link=links.new(light_path_node.outputs[2],diffuse_mix_node.inputs["Fac"]) #links "is diffuse ray" to factor of mix node
-    link=links.new(diffuse_mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(rgba_node.outputs["Color"],direct_emission_node.inputs["Color"])
+    links.new(rgba_node.outputs["Color"],hsv_node.inputs["Color"])
+    links.new(hsv_node.outputs["Color"],indirect_emission_node.inputs["Color"])
+    links.new(light_falloff_node.outputs[1],indirect_emission_node.inputs[1]) #connects linear output to emission strength
+    links.new(indirect_emission_node.outputs["Emission"],diffuse_mix_node.inputs[2])
+    links.new(direct_emission_node.outputs["Emission"],diffuse_mix_node.inputs[1])
+    links.new(light_path_node.outputs[2],diffuse_mix_node.inputs["Fac"]) #links "is diffuse ray" to factor of mix node
+    links.new(diffuse_mix_node.outputs["Shader"],output_node.inputs["Surface"])
     if (material==bpy.data.materials.get("Stationary_Lava") or material==bpy.data.materials.get("Flowing_Lava")) and LAVA_ANIMATION==True:
         pass
     
@@ -224,11 +213,11 @@ def Transparent_Emiting_Shader(material):
     rgba_node.label = "RGBA"
     #Link the nodes
     links=node_tree.links
-    link=links.new(rgba_node.outputs["Color"],emission_node.inputs["Color"])
-    link=links.new(rgba_node.outputs["Alpha"],mix_node.inputs["Fac"])
-    link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
-    link=links.new(emission_node.outputs["Emission"],mix_node.inputs[2])
-    link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(rgba_node.outputs["Color"],emission_node.inputs["Color"])
+    links.new(rgba_node.outputs["Alpha"],mix_node.inputs["Fac"])
+    links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
+    links.new(emission_node.outputs["Emission"],mix_node.inputs[2])
+    links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
     
 def Lily_Pad_Shader(material):
     #A water setup shader should have ran before this
@@ -262,13 +251,13 @@ def Lily_Pad_Shader(material):
     
     
     links=node_tree.links
-    link = links.new(mix_node.outputs[0],output.inputs[0])
-    link = links.new(diffuse_node.outputs[0],mix_node.inputs[1])
-    link = links.new(water_output.outputs[0],mix_node.inputs[2]) #making massive assumption that output of water is in first output
-    link = links.new(less_than_node.outputs[0],mix_node.inputs[0])
-    link = links.new(image_node.outputs[0],diffuse_node.inputs[0])
-    link = links.new(RGB_splitter_node.outputs[2],less_than_node.inputs[0])
-    link = links.new(image_node.outputs[0],RGB_splitter_node.inputs[0])
+    links.new(mix_node.outputs[0],output.inputs[0])
+    links.new(diffuse_node.outputs[0],mix_node.inputs[1])
+    links.new(water_output.outputs[0],mix_node.inputs[2]) #making massive assumption that output of water is in first output
+    links.new(less_than_node.outputs[0],mix_node.inputs[0])
+    links.new(image_node.outputs[0],diffuse_node.inputs[0])
+    links.new(RGB_splitter_node.outputs[2],less_than_node.inputs[0])
+    links.new(image_node.outputs[0],RGB_splitter_node.inputs[0])
     
     
 def Stained_Glass_Shader(material):
@@ -311,16 +300,16 @@ def Stained_Glass_Shader(material):
     rgba_node.label = "RGBA"
     #Link the nodes
     links=node_tree.links
-    link=links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
-    link=links.new(rgba_node.outputs["Alpha"],mix_node.inputs["Fac"])
-    link=links.new(rgba_node.outputs["Color"],hsv_node.inputs["Color"])
-    link=links.new(light_path_node.outputs[1],multiply_node.inputs[0]) #connects Is Shadow Ray to multiply node
-    link=links.new(multiply_node.outputs["Value"],shadow_color_mix_node.inputs["Fac"])
-    link=links.new(hsv_node.outputs["Color"],shadow_color_mix_node.inputs[2])
-    link=links.new(shadow_color_mix_node.outputs["Color"],transparent_node.inputs["Color"])
-    link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
-    link=links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
-    link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
+    links.new(rgba_node.outputs["Alpha"],mix_node.inputs["Fac"])
+    links.new(rgba_node.outputs["Color"],hsv_node.inputs["Color"])
+    links.new(light_path_node.outputs[1],multiply_node.inputs[0]) #connects Is Shadow Ray to multiply node
+    links.new(multiply_node.outputs["Value"],shadow_color_mix_node.inputs["Fac"])
+    links.new(hsv_node.outputs["Color"],shadow_color_mix_node.inputs[2])
+    links.new(shadow_color_mix_node.outputs["Color"],transparent_node.inputs["Color"])
+    links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
+    links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
+    links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
 
 def Stationary_Water_Shader_1(material):
     nodes, node_tree = Setup_Node_Tree(material)
@@ -344,10 +333,10 @@ def Stationary_Water_Shader_1(material):
     rgba_node.label = "RGBA"
     #Link the nodes
     links=node_tree.links
-    link=links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
-    link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
-    link=links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
-    link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
+    links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
+    links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
+    links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
     
 def Stationary_Water_Shader_2(material):
     nodes, node_tree = Setup_Node_Tree(material)
@@ -408,20 +397,20 @@ def Stationary_Water_Shader_2(material):
     texture_coordinate_node.location=(-1200,-300)
     #Link the nodes
     links=node_tree.links
-    link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
-    link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[2])
-    link=links.new(mix_node_two.outputs["Shader"],mix_node.inputs[1])
-    link=links.new(refraction_node.outputs["BSDF"],mix_node_two.inputs[1])
-    link=links.new(glossy_node.outputs["BSDF"],mix_node_two.inputs[2])
-    link=links.new(mixrgb_node.outputs["Color"],glossy_node.inputs["Color"])
-    link=links.new(rgba_node.outputs["Color"],mixrgb_node.inputs["Color1"])
-    link=links.new(multiply_node.outputs["Value"],output_node.inputs["Displacement"])
-    link=links.new(add_node.outputs["Value"],multiply_node.inputs[0])
-    link=links.new(voronoi_node.outputs["Fac"],add_node.inputs[0])
-    link=links.new(multiply_node_two.outputs["Value"],add_node.inputs[1])
-    link=links.new(voronoi_node_two.outputs["Fac"],multiply_node_two.inputs[0])
-    link=links.new(texture_coordinate_node.outputs["Object"],voronoi_node.inputs["Vector"])
-    link=links.new(texture_coordinate_node.outputs["Object"],voronoi_node_two.inputs["Vector"])
+    links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(transparent_node.outputs["BSDF"],mix_node.inputs[2])
+    links.new(mix_node_two.outputs["Shader"],mix_node.inputs[1])
+    links.new(refraction_node.outputs["BSDF"],mix_node_two.inputs[1])
+    links.new(glossy_node.outputs["BSDF"],mix_node_two.inputs[2])
+    links.new(mixrgb_node.outputs["Color"],glossy_node.inputs["Color"])
+    links.new(rgba_node.outputs["Color"],mixrgb_node.inputs["Color1"])
+    links.new(multiply_node.outputs["Value"],output_node.inputs["Displacement"])
+    links.new(add_node.outputs["Value"],multiply_node.inputs[0])
+    links.new(voronoi_node.outputs["Fac"],add_node.inputs[0])
+    links.new(multiply_node_two.outputs["Value"],add_node.inputs[1])
+    links.new(voronoi_node_two.outputs["Fac"],multiply_node_two.inputs[0])
+    links.new(texture_coordinate_node.outputs["Object"],voronoi_node.inputs["Vector"])
+    links.new(texture_coordinate_node.outputs["Object"],voronoi_node_two.inputs["Vector"])
     
 def Stationary_Water_Shader_3(material):
     nodes, node_tree = Setup_Node_Tree(material)
@@ -472,17 +461,17 @@ def Stationary_Water_Shader_3(material):
     multiply_node.inputs[1].default_value=(100)
     #Link the nodes
     links=node_tree.links
-    link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
-    link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
-    link=links.new(mix_node_two.outputs["Shader"],mix_node.inputs[2])
-    link=links.new(refraction_node.outputs["BSDF"],mix_node_two.inputs[1])
-    link=links.new(glossy_node.outputs["BSDF"],mix_node_two.inputs[2])
-    link=links.new(rgbmix_node.outputs["Color"],refraction_node.inputs["Color"])
-    link=links.new(rgbmix_node.outputs["Color"],glossy_node.inputs["Color"])
-    link=links.new(rgba_node.outputs["Color"],rgbmix_node.inputs["Color1"])
-    link=links.new(wave_node.outputs["Color"],rgbmix_node.inputs["Color2"])
-    link=links.new(multiply_node.outputs["Value"],output_node.inputs["Displacement"])
-    link=links.new(wave_node.outputs["Fac"],multiply_node.inputs[0])
+    links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
+    links.new(mix_node_two.outputs["Shader"],mix_node.inputs[2])
+    links.new(refraction_node.outputs["BSDF"],mix_node_two.inputs[1])
+    links.new(glossy_node.outputs["BSDF"],mix_node_two.inputs[2])
+    links.new(rgbmix_node.outputs["Color"],refraction_node.inputs["Color"])
+    links.new(rgbmix_node.outputs["Color"],glossy_node.inputs["Color"])
+    links.new(rgba_node.outputs["Color"],rgbmix_node.inputs["Color1"])
+    links.new(wave_node.outputs["Color"],rgbmix_node.inputs["Color2"])
+    links.new(multiply_node.outputs["Value"],output_node.inputs["Displacement"])
+    links.new(wave_node.outputs["Fac"],multiply_node.inputs[0])
 
 def Stationary_Water_Shader_4(material):
     nodes, node_tree = Setup_Node_Tree(material)
@@ -518,14 +507,14 @@ def Stationary_Water_Shader_4(material):
     rgba_node.label = "RGBA"
     #Link the nodes
     links=node_tree.links
-    link=links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
-    link=links.new(rgba_node.outputs["Color"],glossy_node.inputs["Color"])
-    link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[2])
-    link=links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[1])
-    link=links.new(fresnel_node.outputs["Fac"],fresnel_mix_node.inputs["Fac"])
-    link=links.new(mix_node.outputs["Shader"],fresnel_mix_node.inputs[1])
-    link=links.new(glossy_node.outputs["BSDF"],fresnel_mix_node.inputs[2])
-    link=links.new(fresnel_mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
+    links.new(rgba_node.outputs["Color"],glossy_node.inputs["Color"])
+    links.new(transparent_node.outputs["BSDF"],mix_node.inputs[2])
+    links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[1])
+    links.new(fresnel_node.outputs["Fac"],fresnel_mix_node.inputs["Fac"])
+    links.new(mix_node.outputs["Shader"],fresnel_mix_node.inputs[1])
+    links.new(glossy_node.outputs["BSDF"],fresnel_mix_node.inputs[2])
+    links.new(fresnel_mix_node.outputs["Shader"],output_node.inputs["Surface"])
     
 def Stationary_Water_Shader_5(material):
     nodes, node_tree = Setup_Node_Tree(material)
@@ -535,7 +524,6 @@ def Stationary_Water_Shader_5(material):
     #Create the fresnel mix shader
     fresnel_mix_node=nodes.new('ShaderNodeMixShader')
     fresnel_mix_node.location=(300,300)
-    #mix_node.inputs["Fac"].default_value=(.1) now connects to fresnel
     #Create Fresnel node
     fresnel_node=nodes.new('ShaderNodeFresnel')
     fresnel_node.location=(0,500)
@@ -598,36 +586,32 @@ def Stationary_Water_Shader_5(material):
     texture_coordinate_node.location=(-1200,-300)
     #Link the nodes
     links=node_tree.links
-    link=links.new(fresnel_mix_node.outputs["Shader"],output_node.inputs["Surface"])
-    link=links.new(fresnel_node.outputs["Fac"],fresnel_mix_node.inputs[0])
-    link=links.new(mix_node_transparent_mix.outputs["Shader"],fresnel_mix_node.inputs[1])
-    link=links.new(diffuse_transparent_mix_shader.outputs["Shader"],mix_node_transparent_mix.inputs[1])
-    link=links.new(diffuse_node.outputs["BSDF"],diffuse_transparent_mix_shader.inputs[1])
-    link=links.new(transparent_node.outputs["BSDF"],diffuse_transparent_mix_shader.inputs[2])
-    link=links.new(mix_node_ref_glossy.outputs["Shader"],mix_node_transparent_mix.inputs[2])
-    link=links.new(mix_node_ref_glossy.outputs["Shader"],fresnel_mix_node.inputs[2])
-    link=links.new(refraction_node.outputs["BSDF"],mix_node_ref_glossy.inputs[1])
-    link=links.new(glossy_node.outputs["BSDF"],mix_node_ref_glossy.inputs[2])
-    link=links.new(rgba_node.outputs["Color"],refraction_node.inputs["Color"])
-    link=links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
+    links.new(fresnel_mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(fresnel_node.outputs["Fac"],fresnel_mix_node.inputs[0])
+    links.new(mix_node_transparent_mix.outputs["Shader"],fresnel_mix_node.inputs[1])
+    links.new(diffuse_transparent_mix_shader.outputs["Shader"],mix_node_transparent_mix.inputs[1])
+    links.new(diffuse_node.outputs["BSDF"],diffuse_transparent_mix_shader.inputs[1])
+    links.new(transparent_node.outputs["BSDF"],diffuse_transparent_mix_shader.inputs[2])
+    links.new(mix_node_ref_glossy.outputs["Shader"],mix_node_transparent_mix.inputs[2])
+    links.new(mix_node_ref_glossy.outputs["Shader"],fresnel_mix_node.inputs[2])
+    links.new(refraction_node.outputs["BSDF"],mix_node_ref_glossy.inputs[1])
+    links.new(glossy_node.outputs["BSDF"],mix_node_ref_glossy.inputs[2])
+    links.new(rgba_node.outputs["Color"],refraction_node.inputs["Color"])
+    links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
     
-    
-    link=links.new(multiply_node.outputs["Value"],output_node.inputs["Displacement"])
-    link=links.new(add_node.outputs["Value"],multiply_node.inputs[0])
-    link=links.new(voronoi_node.outputs["Fac"],add_node.inputs[0])
-    link=links.new(multiply_node_two.outputs["Value"],add_node.inputs[1])
-    link=links.new(voronoi_node_two.outputs["Fac"],multiply_node_two.inputs[0])
-    link=links.new(texture_coordinate_node.outputs["Object"],voronoi_node.inputs["Vector"])
-    link=links.new(texture_coordinate_node.outputs["Object"],voronoi_node_two.inputs["Vector"])
+    links.new(multiply_node.outputs["Value"],output_node.inputs["Displacement"])
+    links.new(add_node.outputs["Value"],multiply_node.inputs[0])
+    links.new(voronoi_node.outputs["Fac"],add_node.inputs[0])
+    links.new(multiply_node_two.outputs["Value"],add_node.inputs[1])
+    links.new(voronoi_node_two.outputs["Fac"],multiply_node_two.inputs[0])
+    links.new(texture_coordinate_node.outputs["Object"],voronoi_node.inputs["Vector"])
+    links.new(texture_coordinate_node.outputs["Object"],voronoi_node_two.inputs["Vector"])
 
 def Flowing_Water_Shader(material):
     material.use_nodes=True
     
 def Slime_Shader(material):
     nodes, node_tree = Setup_Node_Tree(material)
-    #commented out alt versions
-    #node_tree=bpy.data.materials[material].node_tree
-    #diffuse_node=nodes.get('ShaderNodeBsdfDiffuse')
     #Create the output node
     output_node=nodes.new('ShaderNodeOutputMaterial')
     output_node.location=(300,300)
@@ -648,16 +632,13 @@ def Slime_Shader(material):
     rgba_node.label = "RGBA"
     #Link the nodes
     links=node_tree.links
-    link=links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
-    link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
-    link=links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
-    link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
+    links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
+    links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
+    links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
 
 def Ice_Shader(material):
     nodes, node_tree = Setup_Node_Tree(material)
-    #commented out alt versions
-    #node_tree=bpy.data.materials[material].node_tree
-    #diffuse_node=nodes.get('ShaderNodeBsdfDiffuse')
     #Create the output node
     output_node=nodes.new('ShaderNodeOutputMaterial')
     output_node.location=(300,300)
@@ -678,10 +659,10 @@ def Ice_Shader(material):
     rgba_node.label = "RGBA"
     #Link the nodes
     links=node_tree.links
-    link=links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
-    link=links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
-    link=links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
-    link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
+    links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
+    links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
+    links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
     
 def Sky_Day_Shader(world):
     nodes, node_tree = Setup_Node_Tree(world)
@@ -700,9 +681,9 @@ def Sky_Day_Shader(world):
     sky_node.location=(-600,300)
     #Link the nodes
     links=node_tree.links
-    link=links.new(background_node.outputs["Background"],output_node.inputs["Surface"])
-    link=links.new(sky_node.outputs["Color"],HSV_node.inputs["Color"])
-    link=links.new(HSV_node.outputs["Color"],background_node.inputs["Color"])
+    links.new(background_node.outputs["Background"],output_node.inputs["Surface"])
+    links.new(sky_node.outputs["Color"],HSV_node.inputs["Color"])
+    links.new(HSV_node.outputs["Color"],background_node.inputs["Color"])
     
 
 def Sky_Night_Shader(world):
@@ -786,37 +767,30 @@ def Sky_Night_Shader(world):
     texture_coordinate_node.location=(-2700,300)
     #Link the nodes
     links=node_tree.links
-    link=links.new(diffuse_mixer_node.outputs["Shader"],output_node.inputs["Surface"])
-    link=links.new(mix_node.outputs["Shader"],diffuse_mixer_node.inputs[1])
-    link=links.new(solid_background_node.outputs["Background"],diffuse_mixer_node.inputs[2])
-    link=links.new(light_path_node.outputs[2],diffuse_mixer_node.inputs[0]) # connects "Is Diffuse Ray" to factor
-    #link=links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
-    link=links.new(background_node.outputs["Background"],mix_node.inputs[1])
-    link=links.new(background_node_two.outputs["Background"],mix_node.inputs[2])
-    link=links.new(colorramp_node.outputs["Color"],background_node.inputs["Color"])
-    link=links.new(sky_node.outputs["Color"],background_node_two.inputs["Color"])
-    link=links.new(voronoi_node.outputs["Color"],colorramp_node.inputs["Fac"])
-    link=links.new(combine_node.outputs["Vector"],voronoi_node.inputs["Vector"])
-    link=links.new(add_node.outputs["Value"],combine_node.inputs["X"])
-    link=links.new(add_node_two.outputs["Value"],combine_node.inputs["Y"])
-    link=links.new(round_node.outputs["Value"],add_node.inputs[0])
-    link=links.new(round_node_two.outputs["Value"],add_node_two.inputs[0])
-    link=links.new(multiply_node.outputs["Value"],round_node.inputs[0])
-    link=links.new(multiply_node_two.outputs["Value"],round_node_two.inputs[0])
-    link=links.new(separate_node.outputs["X"],multiply_node.inputs[0])
-    link=links.new(separate_node.outputs["Y"],multiply_node_two.inputs[0])
-    link=links.new(texture_coordinate_node.outputs["Camera"],separate_node.inputs["Vector"])
-   
-
-def Sun_Shader():
-    pass
+    links.new(diffuse_mixer_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(mix_node.outputs["Shader"],diffuse_mixer_node.inputs[1])
+    links.new(solid_background_node.outputs["Background"],diffuse_mixer_node.inputs[2])
+    links.new(light_path_node.outputs[2],diffuse_mixer_node.inputs[0]) # connects "Is Diffuse Ray" to factor
+    #links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(background_node.outputs["Background"],mix_node.inputs[1])
+    links.new(background_node_two.outputs["Background"],mix_node.inputs[2])
+    links.new(colorramp_node.outputs["Color"],background_node.inputs["Color"])
+    links.new(sky_node.outputs["Color"],background_node_two.inputs["Color"])
+    links.new(voronoi_node.outputs["Color"],colorramp_node.inputs["Fac"])
+    links.new(combine_node.outputs["Vector"],voronoi_node.inputs["Vector"])
+    links.new(add_node.outputs["Value"],combine_node.inputs["X"])
+    links.new(add_node_two.outputs["Value"],combine_node.inputs["Y"])
+    links.new(round_node.outputs["Value"],add_node.inputs[0])
+    links.new(round_node_two.outputs["Value"],add_node_two.inputs[0])
+    links.new(multiply_node.outputs["Value"],round_node.inputs[0])
+    links.new(multiply_node_two.outputs["Value"],round_node_two.inputs[0])
+    links.new(separate_node.outputs["X"],multiply_node.inputs[0])
+    links.new(separate_node.outputs["Y"],multiply_node_two.inputs[0])
+    links.new(texture_coordinate_node.outputs["Camera"],separate_node.inputs["Vector"])
 
 
 def Wood_Displacement_Texture(material,rgba_image):
     nodes, node_tree = Setup_Node_Tree(material)
-    #commented out alt versions
-    #node_tree=bpy.data.materials[material].node_tree
-    #diffuse_node=nodes.get('ShaderNodeBsdfDiffuse')
     #Create the output node
     output_node=nodes.new('ShaderNodeOutputMaterial')
     output_node.location=(300,300)
@@ -885,16 +859,16 @@ def Wood_Displacement_Texture(material,rgba_image):
     #Link the nodes
     links=node_tree.links
     #link surface modifiers
-    link=links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
-    link=links.new(diffuse_node.outputs["BSDF"],output_node.inputs["Surface"])
+    links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
+    links.new(diffuse_node.outputs["BSDF"],output_node.inputs["Surface"])
     #link displacement modifiers
-    link=links.new(magic_node_one.outputs["Fac"],math_add_node_one.inputs[0])
-    link=links.new(magic_node_two.outputs["Fac"],math_add_node_one.inputs[1])
-    link=links.new(math_add_node_one.outputs[0],math_add_node_two.inputs[0])
-    link=links.new(noise_node.outputs["Fac"],math_multiply_node.inputs[0])
-    link=links.new(math_multiply_node.outputs[0],math_add_node_two.inputs[1])
-    link=links.new(math_add_node_two.outputs[0],math_divide_node.inputs[0])
-    link=links.new(math_divide_node.outputs[0],output_node.inputs["Displacement"])
+    links.new(magic_node_one.outputs["Fac"],math_add_node_one.inputs[0])
+    links.new(magic_node_two.outputs["Fac"],math_add_node_one.inputs[1])
+    links.new(math_add_node_one.outputs[0],math_add_node_two.inputs[0])
+    links.new(noise_node.outputs["Fac"],math_multiply_node.inputs[0])
+    links.new(math_multiply_node.outputs[0],math_add_node_two.inputs[1])
+    links.new(math_add_node_two.outputs[0],math_divide_node.inputs[0])
+    links.new(math_divide_node.outputs[0],output_node.inputs["Displacement"])
 
 
 #MAIN
@@ -1031,12 +1005,6 @@ def main():
         else:
             Sky_Night_Shader(world)
     print("Sky shaded")
-    
-    
-    #Set up the sun
-    print("Started shading sun")
-    Sun_Shader()
-    print("Sun shaded")
     
     #Remove unnecessary textures
     print("Removing unnecessary textures")
