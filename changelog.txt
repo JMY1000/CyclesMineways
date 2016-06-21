@@ -8,3 +8,7 @@ USER_INPUT_SCENE is now respected and objects from other scenes will not be affe
 Stained Glass now makes the shadow it casts its own color
   There is now a constant you can change to say how much of the light should be colored
 Lily pads now use proper water shaders
+Code has been cleaned up
+  Unused constants have been removed
+  Unused sun shader function removed
+  Indentation of comments at the top of the code added
