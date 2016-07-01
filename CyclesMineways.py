@@ -256,7 +256,8 @@ def Lily_Pad_Shader(material):
     links.new(water_output.outputs[0],mix_node.inputs[2]) #making massive assumption that output of water is in first output
     links.new(less_than_node.outputs[0],mix_node.inputs[0])
     links.new(image_node.outputs[0],diffuse_node.inputs[0])
-    links.new(RGB_splitter_node.outputs[2],less_than_node.inputs[0])
+    links.new(RGB_splitter_node.outputs[2],less_than_node.inputs[1])
+    links.new(RGB_splitter_node.outputs[1],less_than_node.inputs[0])
     links.new(image_node.outputs[0],RGB_splitter_node.inputs[0])
     
     
