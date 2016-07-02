@@ -1,4 +1,7 @@
-Better lighting based on time of day, including animated background stars
+Additional lighting styles based on time of day
+
+Animated background stars
+  Requires scripting of parts of the engine not yet explored (timeline) 
   
 Sprites for sun and moon
   Requires access to texture files that aren't currently provided
@@ -23,7 +26,7 @@ GUI for options and execution
 
 Support for connected textures
   Requires texture files not currently passed by Mineways
-  This will likely be an all-mineways addtion (no extra python scripting)
+  This will likely be an all-Mineways addtion (no extra python scripting)
 
 Clouds (2D and 3D)
   2D and 3D, Minecrafty and "real"
