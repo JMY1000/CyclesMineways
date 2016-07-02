@@ -18,6 +18,9 @@ Lower noise lighting (possibly using invisible light emitters that only show on 
      Need to use invisible light emitters that only show in shadows
   Requires knowledge of how Cycles works and how to reduce noise
 
+GUI for options and execution
+  Requires exploring portions of Blender Python not explored
+
 Support for connected textures
   Requires texture files not currently passed by Mineways
   This will likely be an all-mineways addtion (no extra python scripting)
