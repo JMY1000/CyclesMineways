@@ -247,7 +247,6 @@ def Lily_Pad_Shader(material):
     less_than_node = nodes.new('ShaderNodeMath')
     less_than_node.location=(0,700)
     less_than_node.operation="LESS_THAN"
-    less_than_node.inputs[1].default_value=0.3 #magic number that works for filtering
     
     
     links=node_tree.links
