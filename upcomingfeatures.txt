@@ -2,6 +2,8 @@ Additional lighting styles based on time of day
 
 Nether and end environment shaders
 
+Better glass shader
+
 Animated background stars
   Requires scripting of parts of the engine not yet explored (timeline) 
   
