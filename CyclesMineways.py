@@ -821,7 +821,7 @@ def main():
                         print(material.name+" is transparent light block.")
                         Transparent_Emiting_Shader(material)
                     #if the material is stationary water, use a special shader
-                    elif material==bpy.data.materials.get("Stationary_Water"+material_suffix) or material==bpy.data.materials.get("Water"+material_suffix):
+                    elif material==bpy.data.materials.get("Stationary_Water"+material_suffix):
                         print(material.name+" is water.")
                         if WATER_SHADER_TYPE==0:
                             Normal_Shader(material)
