@@ -957,7 +957,7 @@ def main():
                         print(material.name+" is stained glass.")
                         Stained_Glass_Shader(material)
                     #if the material is stationary water or a lily pad, use a special shader
-                    elif material==bpy.data.materials.get("Stationary_Water"+material_suffix) or material==bpy.data.materials.get("Lily_Pad"+material_suffix):
+                    elif material==bpy.data.materials.get("Stationary_Water"+material_suffix) or material==bpy.data.materials.get("Water"+material_suffix) or material==bpy.data.materials.get("Lily_Pad"+material_suffix):
                         print(material.name+" is water or a lily pad.")
                         if WATER_SHADER_TYPE==0:
                             Normal_Shader(material,texture_rgba_image)
