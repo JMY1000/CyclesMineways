@@ -12,4 +12,6 @@ Code has been cleaned up
   Unused constants have been removed
   Unused sun shader function removed
   Indentation of comments at the top of the code added
-upcomingfeatures.txt cleaned up
+upcomingfeatures.txt
+  Many features added
+  Restructured with barriers to implementation and prioritization
