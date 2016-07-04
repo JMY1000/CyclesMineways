@@ -888,17 +888,23 @@ def main():
     
     if PREFIX == "":
         print("Finding best PREFIX")
-        names={}
-        for img in bpy.data.images:
-            pos = max(img.name.rfind("-RGBA.png"),img.name.rfind("-RGB.png"),img.name.rfind("-Alpha.png"))
+        names={} # initalises a dictionary
+        for img in bpy.data.images: # loops through all images in .blend file
+            pos = max( # sets pos to be the max value of the 3 values
+                img.name.rfind("-RGBA.png"), # if "-RGBA.png" is in the file name, returns non -1, else returns -1
+                img.name.rfind("-RGB.png"), # if "-RGB.png" is in the file name, returns non -1, else returns -1
+                img.name.rfind("-Alpha.png")) # if "-Alpha.png" is in the file name, returns non -1, else returns -1
+                # all this max statement really does is checks if the string contains any of those strings, if not, it is -1
             print("checking:",img.name,pos,img.name[:pos])
-            if pos!=-1:
+            if pos!=-1: # if pos==1, it does not contain "-RGBA.png" or "-RGB.png" or "-Alpha.png"
                 try:
-                    names[img.name[:pos]]+=1
+                    names[img.name[:pos]]+=1 # if a key called the file name in the dictionary exists, increase its value by 1
                 except KeyError:
-                    names[img.name[:pos]]=1
+                    names[img.name[:pos]]=1 # this code is only reached if the value could not be increased by one
+                    # this happens when the value does not exist (i.e. the key does not exist because this is the first loop)
         print("names: ",names)
-        PREFIX = max(names)
+        PREFIX = max(names) # finds the name of the key in the dictionary that has the highest value
+        # this is how the code determines what the PREFIX should be (majority vote)
     print("Got PREFIX ('"+PREFIX+"')")
     
     
@@ -917,7 +923,8 @@ def main():
                 print("Adding materials from scene:",scene.name)
                 scene.render.engine='CYCLES'
                 for object in scene.objects:
-                    if object.active_material!=None:
+                    if object.active_material!=None: # This is a bad way or checking of an object is Mineways'
+                        # we probably need to check its assigned texture, or name to see if it is one of our objects
                         materials.append(object.active_material)
     print("Render engine set to Cycles for selected scenes")
             
@@ -1008,20 +1015,23 @@ def main():
     
     #Remove unnecessary textures
     print("Removing unnecessary textures")
-    for img in bpy.data.images:
+    for img in bpy.data.images: # loops through all images in ,blend file
         try:
-            suffix = img.name.rfind(".")
-            int(img.name[suffix+1:])
+            suffix = img.name.rfind(".") # finds the index of the last . in the image's name
+            int(img.name[suffix+1:]) # check to see if the characters after the . are numbers
+            # EG test.001 would work (and return 1, but we're not getting its return value)
+            # and test would error out, as suffix = -1, therefor int("test") errors
+            # if the entire name of the image is a number (eg: 123.png), it will remove it by mistake //needs fixing
             print("Texture "+img.name+" removed for being a duplicate.")
-            img.user_clear()
-            bpy.data.images.remove(img)
+            img.user_clear() # clears all the image's parents to it can be removed
+            bpy.data.images.remove(img) # removes image from .blend file
         except:
-            if (img.name==PREFIX+"-Alpha.png") or (img.name==PREFIX+"-RGB.png"):
+            if (img.name==PREFIX+"-Alpha.png") or (img.name==PREFIX+"-RGB.png"): # checks if img ends in "-Alpha.png" or "-RGB.png"
                 print("Texture "+img.name+" removed for being redundant")
-                img.user_clear()
-                bpy.data.images.remove(img)
+                img.user_clear() # clears all the image's parents to it can be removed
+                bpy.data.images.remove(img) # removes image from .blend file
             else:
-                print("Texture "+img.name+" was not removed.")
+                print("Texture "+img.name+" was not removed.") # only non-Mineways files can get here, or PREFIX.RGBA.png
     print("Finished removing unnecessary textures")
 
 
