@@ -41,15 +41,18 @@
 
 # CONSTANTS
 
+
 # PREFIX can stay as "" if you are importing into project that is not massive and has no other imported mineways worlds.
 # If the .blend does not meet these requirements, you must set PREFIX to allow this script to know what it is working with.
 # Set the PREFIX to the name of the file it uses (eg: a castle.obj file uses PREFIX = "castle")
 PREFIX = ""
+
 # USER_INPUT_SCENE controls what scenes Blender will apply this script's functionality to.
 # If this list has scenes, the script only use those scenes to work with;
 # otherwise, it will use all scenes
 # example: USER_INPUT_SCENE = ["scene","scene2","randomScene123"]
 USER_INPUT_SCENE = []
+
 # WATER_SHADER_TYPE controls the water shader that will be used.
 # Use 0 for a solid block shader.
 # Use 1 for a semi-transparent shader.
@@ -57,21 +60,25 @@ USER_INPUT_SCENE = []
 # Use 3 for a wavy shader.
 # Use 4 for a Fresnel based semi-transparent shader
 # Use 5 for an all-in-one shader
-WATER_SHADER_TYPE = 4
+WATER_SHADER_TYPE = 3
+
 # TIME_OF_DAY controls the time of day.
 # If TIME_OF_DAY is between 6.5 and 19.5 (crossing 12), the daytime shader will be used.
 # If TIME_OF_DAY is between 19.5 and 6.5 (crossing 24), the nighttim shader will be used.
 # NOTE: The decimal is not in minutes, and is a fraction (ex. 12:30 is 12.50).
 # NOTE: This currently only handles day and night
 TIME_OF_DAY = 12.00
+
 # DISPLACE_WOOD controls whether virtual displacement (changes normals for illusion of roughness) for wooden plank blocks is used.
 # NOTE: This currently only works for oak wood planks.
 # NOTE: This can only be True or False
 DISPLACE_WOOD = False
+
 # STAINED_GLASS_COLOR controls how coloured the light that passed through stained glass is.
 # 0 means light passed through unchanged
 # 1 means all the light is changed to the glass's color (not recommended)
 STAINED_GLASS_COLOR = 0.2
+
 
 #List of transparent blocks
 transparentBlocks = ["Acacia_Leaves","Dark_Oak_Leaves","Acacia_Door","Activator_Rail","Bed","Beetroot_Seeds","Birch_Door","Brewing_Stand","Cactus","Carrot","Carrots","Cauldron","Chorus_Flower","Chorus_Flower_Dead","Chorus_Plant","Cobweb",
@@ -419,28 +426,28 @@ def Stationary_Water_Shader_3(material):
     output_node.location=(300,300)
     #Create the first mix shader node
     mix_node=nodes.new('ShaderNodeMixShader')
-    mix_node.location=(0,300)
-    mix_node.inputs["Fac"].default_value=(0.8)
+    mix_node.location=(-300,300)
+    #Create the clamped add node
+    add_node=nodes.new('ShaderNodeMath')
+    add_node.location=(-600,600)
+    add_node.operation=('ADD')
+    add_node.use_clamp=True
+    #Create the fresnel node
+    fresnel_node=nodes.new('ShaderNodeFresnel')
+    fresnel_node.location=(-900,600)
+    fresnel_node.inputs["IOR"].default_value=1.33
     #Create the transparent shader node
     transparent_node=nodes.new('ShaderNodeBsdfTransparent')
-    transparent_node.location=(-300,600)
-    #Create the second mix shader node
-    mix_node_two=nodes.new('ShaderNodeMixShader')
-    mix_node_two.location=(-300,300)
-    mix_node.inputs["Fac"].default_value=(0.8)
-    #Create the refraction shader node
-    refraction_node=nodes.new('ShaderNodeBsdfRefraction')
-    refraction_node.location=(-600,300)
-    refraction_node.inputs["Roughness"].default_value=(0.5)
-    refraction_node.inputs["IOR"].default_value=(1.333333)
+    transparent_node.location=(-600,400)
     #Create the glossy shader node
     glossy_node=nodes.new('ShaderNodeBsdfGlossy')
-    glossy_node.location=(-600,0)
-    glossy_node.inputs["Roughness"].default_value=(0.5)
+    glossy_node.location=(-600,300)
+    glossy_node.inputs["Roughness"].default_value=0.02
     #Create the rgb mix shader
     rgbmix_node=nodes.new('ShaderNodeMixRGB')
     rgbmix_node.location=(-900,300)
-    rgbmix_node.inputs["Fac"].default_value=(0.9)
+    rgbmix_node.inputs["Fac"].default_value=0.3
+    rgbmix_node.inputs["Color2"].default_value=(1,1,1,1)
     #Create the rgba node
     rgba_node=nodes.new('ShaderNodeTexImage')
     rgba_node.image = bpy.data.images[PREFIX+"-RGBA.png"]
@@ -450,26 +457,23 @@ def Stationary_Water_Shader_3(material):
     #Create the wave texture node
     wave_node=nodes.new('ShaderNodeTexWave')
     wave_node.location=(-1200,0)
-    wave_node.inputs["Scale"].default_value=(1)
-    wave_node.inputs["Distortion"].default_value=(5)
-    wave_node.inputs["Detail"].default_value=(5)
-    wave_node.inputs["Detail Scale"].default_value=(5)
+    wave_node.inputs["Scale"].default_value=1.7
+    wave_node.inputs["Distortion"].default_value=34
+    wave_node.inputs["Detail"].default_value=5
+    wave_node.inputs["Detail Scale"].default_value=5
     #Create the multiply node
     multiply_node=nodes.new('ShaderNodeMath')
-    multiply_node.location=(-600,-300)
+    multiply_node.location=(-600,0)
     multiply_node.operation=('MULTIPLY')
-    multiply_node.inputs[1].default_value=(100)
     #Link the nodes
     links=node_tree.links
     links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(add_node.outputs["Value"],mix_node.inputs["Fac"])
+    links.new(fresnel_node.outputs["Fac"],add_node.inputs[0])
     links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
-    links.new(mix_node_two.outputs["Shader"],mix_node.inputs[2])
-    links.new(refraction_node.outputs["BSDF"],mix_node_two.inputs[1])
-    links.new(glossy_node.outputs["BSDF"],mix_node_two.inputs[2])
-    links.new(rgbmix_node.outputs["Color"],refraction_node.inputs["Color"])
+    links.new(glossy_node.outputs["BSDF"],mix_node.inputs[2])
     links.new(rgbmix_node.outputs["Color"],glossy_node.inputs["Color"])
     links.new(rgba_node.outputs["Color"],rgbmix_node.inputs["Color1"])
-    links.new(wave_node.outputs["Color"],rgbmix_node.inputs["Color2"])
     links.new(multiply_node.outputs["Value"],output_node.inputs["Displacement"])
     links.new(wave_node.outputs["Fac"],multiply_node.inputs[0])
 
