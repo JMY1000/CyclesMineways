@@ -55,12 +55,10 @@ USER_INPUT_SCENE = []
 
 # WATER_SHADER_TYPE controls the water shader that will be used.
 # Use 0 for a solid block shader.
-# Use 1 for a semi-transparent shader.
-# Use 2 for a choppy shader.
+# Use 1 for a semi-transparent flat shader.
+# Use 2 for a small, sharp waves shader.
 # Use 3 for a wavy shader.
-# Use 4 for a Fresnel based semi-transparent shader
-# Use 5 for an all-in-one shader
-WATER_SHADER_TYPE = 3
+WATER_SHADER_TYPE = 1
 
 # TIME_OF_DAY controls the time of day.
 # If TIME_OF_DAY is between 6.5 and 19.5 (crossing 12), the daytime shader will be used.
@@ -318,166 +316,8 @@ def Stained_Glass_Shader(material):
     links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
     links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
 
-def Stationary_Water_Shader_1(material):
-    nodes, node_tree = Setup_Node_Tree(material)
-    #Create the output node
-    output_node=nodes.new('ShaderNodeOutputMaterial')
-    output_node.location=(300,300)
-    #Create the mix shader
-    mix_node=nodes.new('ShaderNodeMixShader')
-    mix_node.location=(0,300)
-    #Create the diffuse node
-    diffuse_node=nodes.new('ShaderNodeBsdfDiffuse')
-    diffuse_node.location=(-300,300)
-    #Create the transparent node
-    transparent_node=nodes.new('ShaderNodeBsdfTransparent')
-    transparent_node.location=(-300,0)
-    #Create the rgba node
-    rgba_node=nodes.new('ShaderNodeTexImage')
-    rgba_node.image = bpy.data.images[PREFIX+"-RGBA.png"]
-    rgba_node.interpolation=('Closest')
-    rgba_node.location=(-600,300)
-    rgba_node.label = "RGBA"
-    #Link the nodes
-    links=node_tree.links
-    links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
-    links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
-    links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
-    links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
-    
-def Stationary_Water_Shader_2(material):
-    nodes, node_tree = Setup_Node_Tree(material)
-    #Create the output node
-    output_node=nodes.new('ShaderNodeOutputMaterial')
-    output_node.location=(300,300)
-    #Create the first mix shader
-    mix_node=nodes.new('ShaderNodeMixShader')
-    mix_node.location=(0,300)
-    mix_node.inputs["Fac"].default_value=(.1)
-    #Create the second mix shader
-    mix_node_two=nodes.new('ShaderNodeMixShader')
-    mix_node_two.location=(-300,300)
-    #Create the transparent node
-    transparent_node=nodes.new('ShaderNodeBsdfTransparent')
-    transparent_node.location=(-300,0)
-    #Create the glossy node
-    glossy_node=nodes.new('ShaderNodeBsdfGlossy')
-    glossy_node.location=(-600,0)
-    glossy_node.inputs["Roughness"].default_value=(0)
-    #Create the refraction node
-    refraction_node=nodes.new('ShaderNodeBsdfRefraction')
-    refraction_node.location=(-600,300)
-    refraction_node.inputs["IOR"].default_value=(1.333)
-    #Create the mixrgb node
-    mixrgb_node=nodes.new('ShaderNodeMixRGB')
-    mixrgb_node.location=(-900,0)
-    mixrgb_node.inputs["Color2"].default_value=(0,0,0,0)
-    mixrgb_node.inputs["Fac"].default_value=(1)
-    #Create the rgba node
-    rgba_node=nodes.new('ShaderNodeTexImage')
-    rgba_node.image = bpy.data.images[PREFIX+"-RGBA.png"]
-    rgba_node.interpolation=('Closest')
-    rgba_node.location=(-1200,0)
-    rgba_node.label = "RGBA"
-    #Create the first multiply node
-    multiply_node=nodes.new('ShaderNodeMath')
-    multiply_node.location=(0,-300)
-    multiply_node.operation=('MULTIPLY')
-    #Create the add node
-    add_node=nodes.new('ShaderNodeMath')
-    add_node.location=(-300,-300)
-    add_node.operation=('ADD')
-    #Create the first voronoi texture
-    voronoi_node=nodes.new('ShaderNodeTexVoronoi')
-    voronoi_node.location=(-600,-300)
-    voronoi_node.inputs[1].default_value=(2.0)
-    #Create the second multiply node
-    multiply_node_two=nodes.new('ShaderNodeMath')
-    multiply_node_two.location=(-600,-600)
-    multiply_node_two.operation=('MULTIPLY')
-    #Create the second voronoi texture
-    voronoi_node_two=nodes.new('ShaderNodeTexVoronoi')
-    voronoi_node_two.location=(-900,-600)
-    voronoi_node_two.inputs[1].default_value=(3.0)
-    #Create the texture coordinate node
-    texture_coordinate_node=nodes.new('ShaderNodeTexCoord')
-    texture_coordinate_node.location=(-1200,-300)
-    #Link the nodes
-    links=node_tree.links
-    links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
-    links.new(transparent_node.outputs["BSDF"],mix_node.inputs[2])
-    links.new(mix_node_two.outputs["Shader"],mix_node.inputs[1])
-    links.new(refraction_node.outputs["BSDF"],mix_node_two.inputs[1])
-    links.new(glossy_node.outputs["BSDF"],mix_node_two.inputs[2])
-    links.new(mixrgb_node.outputs["Color"],glossy_node.inputs["Color"])
-    links.new(rgba_node.outputs["Color"],mixrgb_node.inputs["Color1"])
-    links.new(multiply_node.outputs["Value"],output_node.inputs["Displacement"])
-    links.new(add_node.outputs["Value"],multiply_node.inputs[0])
-    links.new(voronoi_node.outputs["Fac"],add_node.inputs[0])
-    links.new(multiply_node_two.outputs["Value"],add_node.inputs[1])
-    links.new(voronoi_node_two.outputs["Fac"],multiply_node_two.inputs[0])
-    links.new(texture_coordinate_node.outputs["Object"],voronoi_node.inputs["Vector"])
-    links.new(texture_coordinate_node.outputs["Object"],voronoi_node_two.inputs["Vector"])
-    
-def Stationary_Water_Shader_3(material):
-    nodes, node_tree = Setup_Node_Tree(material)
-    #Create the output node
-    output_node=nodes.new('ShaderNodeOutputMaterial')
-    output_node.location=(300,300)
-    #Create the first mix shader node
-    mix_node=nodes.new('ShaderNodeMixShader')
-    mix_node.location=(-300,300)
-    #Create the clamped add node
-    add_node=nodes.new('ShaderNodeMath')
-    add_node.location=(-600,600)
-    add_node.operation=('ADD')
-    add_node.use_clamp=True
-    #Create the fresnel node
-    fresnel_node=nodes.new('ShaderNodeFresnel')
-    fresnel_node.location=(-900,600)
-    fresnel_node.inputs["IOR"].default_value=1.33
-    #Create the transparent shader node
-    transparent_node=nodes.new('ShaderNodeBsdfTransparent')
-    transparent_node.location=(-600,400)
-    #Create the glossy shader node
-    glossy_node=nodes.new('ShaderNodeBsdfGlossy')
-    glossy_node.location=(-600,300)
-    glossy_node.inputs["Roughness"].default_value=0.02
-    #Create the rgb mix shader
-    rgbmix_node=nodes.new('ShaderNodeMixRGB')
-    rgbmix_node.location=(-900,300)
-    rgbmix_node.inputs["Fac"].default_value=0.3
-    rgbmix_node.inputs["Color2"].default_value=(1,1,1,1)
-    #Create the rgba node
-    rgba_node=nodes.new('ShaderNodeTexImage')
-    rgba_node.image = bpy.data.images[PREFIX+"-RGBA.png"]
-    rgba_node.interpolation=('Closest')
-    rgba_node.location=(-1200,300)
-    rgba_node.label = "RGBA"
-    #Create the wave texture node
-    wave_node=nodes.new('ShaderNodeTexWave')
-    wave_node.location=(-1200,0)
-    wave_node.inputs["Scale"].default_value=1.7
-    wave_node.inputs["Distortion"].default_value=34
-    wave_node.inputs["Detail"].default_value=5
-    wave_node.inputs["Detail Scale"].default_value=5
-    #Create the multiply node
-    multiply_node=nodes.new('ShaderNodeMath')
-    multiply_node.location=(-600,0)
-    multiply_node.operation=('MULTIPLY')
-    #Link the nodes
-    links=node_tree.links
-    links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
-    links.new(add_node.outputs["Value"],mix_node.inputs["Fac"])
-    links.new(fresnel_node.outputs["Fac"],add_node.inputs[0])
-    links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
-    links.new(glossy_node.outputs["BSDF"],mix_node.inputs[2])
-    links.new(rgbmix_node.outputs["Color"],glossy_node.inputs["Color"])
-    links.new(rgba_node.outputs["Color"],rgbmix_node.inputs["Color1"])
-    links.new(multiply_node.outputs["Value"],output_node.inputs["Displacement"])
-    links.new(wave_node.outputs["Fac"],multiply_node.inputs[0])
 
-def Stationary_Water_Shader_4(material):
+def Stationary_Water_Shader_1(material):
     nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
     output_node=nodes.new('ShaderNodeOutputMaterial')
@@ -492,7 +332,7 @@ def Stationary_Water_Shader_4(material):
     #Create the transparency-diffuse mixer
     mix_node=nodes.new('ShaderNodeMixShader')
     mix_node.location=(-300,300)
-    mix_node.inputs[0].default_value=0.6
+    mix_node.inputs[0].default_value=0.4
     #Create the diffuse node
     diffuse_node=nodes.new('ShaderNodeBsdfDiffuse')
     diffuse_node.location=(-600,300)
@@ -520,7 +360,9 @@ def Stationary_Water_Shader_4(material):
     links.new(glossy_node.outputs["BSDF"],fresnel_mix_node.inputs[2])
     links.new(fresnel_mix_node.outputs["Shader"],output_node.inputs["Surface"])
     
-def Stationary_Water_Shader_5(material):
+
+    
+def Stationary_Water_Shader_2(material):
     nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
     output_node=nodes.new('ShaderNodeOutputMaterial')
@@ -610,6 +452,64 @@ def Stationary_Water_Shader_5(material):
     links.new(voronoi_node_two.outputs["Fac"],multiply_node_two.inputs[0])
     links.new(texture_coordinate_node.outputs["Object"],voronoi_node.inputs["Vector"])
     links.new(texture_coordinate_node.outputs["Object"],voronoi_node_two.inputs["Vector"])
+    
+def Stationary_Water_Shader_3(material):
+    nodes, node_tree = Setup_Node_Tree(material)
+    #Create the output node
+    output_node=nodes.new('ShaderNodeOutputMaterial')
+    output_node.location=(300,300)
+    #Create the first mix shader node
+    mix_node=nodes.new('ShaderNodeMixShader')
+    mix_node.location=(-300,300)
+    #Create the clamped add node
+    add_node=nodes.new('ShaderNodeMath')
+    add_node.location=(-600,600)
+    add_node.operation=('ADD')
+    add_node.use_clamp=True
+    #Create the fresnel node
+    fresnel_node=nodes.new('ShaderNodeFresnel')
+    fresnel_node.location=(-900,600)
+    fresnel_node.inputs["IOR"].default_value=1.33
+    #Create the transparent shader node
+    transparent_node=nodes.new('ShaderNodeBsdfTransparent')
+    transparent_node.location=(-600,400)
+    #Create the glossy shader node
+    glossy_node=nodes.new('ShaderNodeBsdfGlossy')
+    glossy_node.location=(-600,300)
+    glossy_node.inputs["Roughness"].default_value=0.02
+    #Create the rgb mix shader
+    rgbmix_node=nodes.new('ShaderNodeMixRGB')
+    rgbmix_node.location=(-900,300)
+    rgbmix_node.inputs["Fac"].default_value=0.3
+    rgbmix_node.inputs["Color2"].default_value=(1,1,1,1)
+    #Create the rgba node
+    rgba_node=nodes.new('ShaderNodeTexImage')
+    rgba_node.image = bpy.data.images[PREFIX+"-RGBA.png"]
+    rgba_node.interpolation=('Closest')
+    rgba_node.location=(-1200,300)
+    rgba_node.label = "RGBA"
+    #Create the wave texture node
+    wave_node=nodes.new('ShaderNodeTexWave')
+    wave_node.location=(-1200,0)
+    wave_node.inputs["Scale"].default_value=1.7
+    wave_node.inputs["Distortion"].default_value=34
+    wave_node.inputs["Detail"].default_value=5
+    wave_node.inputs["Detail Scale"].default_value=5
+    #Create the multiply node
+    multiply_node=nodes.new('ShaderNodeMath')
+    multiply_node.location=(-600,0)
+    multiply_node.operation=('MULTIPLY')
+    #Link the nodes
+    links=node_tree.links
+    links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(add_node.outputs["Value"],mix_node.inputs["Fac"])
+    links.new(fresnel_node.outputs["Fac"],add_node.inputs[0])
+    links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
+    links.new(glossy_node.outputs["BSDF"],mix_node.inputs[2])
+    links.new(rgbmix_node.outputs["Color"],glossy_node.inputs["Color"])
+    links.new(rgba_node.outputs["Color"],rgbmix_node.inputs["Color1"])
+    links.new(multiply_node.outputs["Value"],output_node.inputs["Displacement"])
+    links.new(wave_node.outputs["Fac"],multiply_node.inputs[0])
 
 def Flowing_Water_Shader(material):
     material.use_nodes=True
@@ -978,12 +878,9 @@ def main():
                             Stationary_Water_Shader_2(material)
                         elif WATER_SHADER_TYPE==3:
                             Stationary_Water_Shader_3(material)
-                        elif WATER_SHADER_TYPE==4:
-                            Stationary_Water_Shader_4(material)
-                        elif WATER_SHADER_TYPE==5:
-                            Stationary_Water_Shader_5(material)
                         else:
                             print("ERROR! COULD NOT SET UP WATER")
+                            Normal_Shader(material,texture_rgba_image)
                         if material==bpy.data.materials.get("Lily_Pad"+material_suffix):
                             Lily_Pad_Shader(material)
                     #if the material is flowing water, use a special shader
