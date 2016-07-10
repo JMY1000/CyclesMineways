@@ -612,89 +612,41 @@ def Sky_Night_Shader(world):
     #Add the mix node
     mix_node=nodes.new('ShaderNodeMixShader')
     mix_node.location=(0,300)
-    mix_node.inputs["Fac"].default_value=(0.005)
+    mix_node.inputs["Fac"].default_value=0.005
     #Add the first background node
     background_node=nodes.new('ShaderNodeBackground')
     background_node.location=(-300,300)
-    #Add the second background node
-    background_node_two=nodes.new('ShaderNodeBackground')
-    background_node_two.location=(-300,0)
+    #Create the rgb mix shader
+    rgbmix_node=nodes.new('ShaderNodeMixRGB')
+    rgbmix_node.location=(-500,300)
+    rgbmix_node.inputs["Fac"].default_value=0.05
     #Add the sky texture node
     sky_node=nodes.new('ShaderNodeTexSky')
-    sky_node.location=(-600,0)
+    sky_node.location=(-900,0)
     #Add the colorramp node
     colorramp_node=nodes.new('ShaderNodeValToRGB')
-    colorramp_node.location=(-600,300)
+    colorramp_node.location=(-900,300)
     colorramp_node.color_ramp.interpolation=('CONSTANT')
-    colorramp_node.color_ramp.elements[1].position=(0.04)
+    colorramp_node.color_ramp.elements[1].position=0.03
     colorramp_node.color_ramp.elements[1].color=(0,0,0,255)
     colorramp_node.color_ramp.elements[0].color=(255,255,255,255)
     #Add the voronoi texture
     voronoi_node=nodes.new('ShaderNodeTexVoronoi')
-    voronoi_node.location=(-900,300)
+    voronoi_node.location=(-1200,300)
     voronoi_node.coloring=("CELLS")
-    voronoi_node.inputs["Scale"].default_value=(1000)
-    #Add the combine node
-    combine_node=nodes.new('ShaderNodeCombineXYZ')
-    combine_node.location=(-1200,300)
-    #Add the first add node
-    add_node=nodes.new('ShaderNodeMath')
-    add_node.location=(-1500,300)
-    add_node.operation=('ADD')
-    add_node.inputs[1].default_value=(300)
-    #Add the second add node
-    add_node_two=nodes.new('ShaderNodeMath')
-    add_node_two.location=(-1500,0)
-    add_node_two.operation=('ADD')
-    add_node_two.inputs[1].default_value
-    #Add the first round node
-    round_node=nodes.new('ShaderNodeMath')
-    round_node.location=(-1800,300)
-    round_node.operation=('ROUND')
-    round_node.inputs[1].default_value=(0.5)
-    #Add the second  round node
-    round_node_two=nodes.new('ShaderNodeMath')
-    round_node_two.location=(-1800,0)
-    round_node_two.operation=('ROUND')
-    round_node_two.inputs[1].default_value=(0.5)
-    #Add the first multiply node
-    multiply_node=nodes.new('ShaderNodeMath')
-    multiply_node.location=(-2100,300)
-    multiply_node.operation=('MULTIPLY')
-    multiply_node.inputs[1].default_value=(300)
-    #Add the second multiply node
-    multiply_node_two=nodes.new('ShaderNodeMath')
-    multiply_node_two.location=(-2100,0)
-    multiply_node_two.operation=('MULTIPLY')
-    multiply_node_two.inputs[1].default_value=(300)
-    #Add the separate node
-    separate_node=nodes.new('ShaderNodeSeparateXYZ')
-    separate_node.location=(-2400,300)
-    #Add the texture coordinate node
-    texture_coordinate_node=nodes.new('ShaderNodeTexCoord')
-    texture_coordinate_node.location=(-2700,300)
+    voronoi_node.inputs["Scale"].default_value=200
+    
     #Link the nodes
     links=node_tree.links
     links.new(diffuse_mixer_node.outputs["Shader"],output_node.inputs["Surface"])
     links.new(mix_node.outputs["Shader"],diffuse_mixer_node.inputs[1])
     links.new(solid_background_node.outputs["Background"],diffuse_mixer_node.inputs[2])
-    links.new(light_path_node.outputs[2],diffuse_mixer_node.inputs[0]) # connects "Is Diffuse Ray" to factor
-    #links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(light_path_node.outputs["Is Diffuse Ray"],diffuse_mixer_node.inputs[0]) # connects "Is Diffuse Ray" to factor
     links.new(background_node.outputs["Background"],mix_node.inputs[1])
-    links.new(background_node_two.outputs["Background"],mix_node.inputs[2])
-    links.new(colorramp_node.outputs["Color"],background_node.inputs["Color"])
-    links.new(sky_node.outputs["Color"],background_node_two.inputs["Color"])
+    links.new(rgbmix_node.outputs["Color"],background_node.inputs["Color"])
+    links.new(colorramp_node.outputs["Color"],rgbmix_node.inputs["Color1"])
+    links.new(sky_node.outputs["Color"],rgbmix_node.inputs["Color2"])
     links.new(voronoi_node.outputs["Color"],colorramp_node.inputs["Fac"])
-    links.new(combine_node.outputs["Vector"],voronoi_node.inputs["Vector"])
-    links.new(add_node.outputs["Value"],combine_node.inputs["X"])
-    links.new(add_node_two.outputs["Value"],combine_node.inputs["Y"])
-    links.new(round_node.outputs["Value"],add_node.inputs[0])
-    links.new(round_node_two.outputs["Value"],add_node_two.inputs[0])
-    links.new(multiply_node.outputs["Value"],round_node.inputs[0])
-    links.new(multiply_node_two.outputs["Value"],round_node_two.inputs[0])
-    links.new(separate_node.outputs["X"],multiply_node.inputs[0])
-    links.new(separate_node.outputs["Y"],multiply_node_two.inputs[0])
-    links.new(texture_coordinate_node.outputs["Camera"],separate_node.inputs["Vector"])
 
 
 def Wood_Displacement_Texture(material,rgba_image):
