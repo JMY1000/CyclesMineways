@@ -200,8 +200,6 @@ def Light_Emiting_Shader(material):
     links.new(direct_emission_node.outputs["Emission"],diffuse_mix_node.inputs[1])
     links.new(light_path_node.outputs[2],diffuse_mix_node.inputs["Fac"]) #links "is diffuse ray" to factor of mix node
     links.new(diffuse_mix_node.outputs["Shader"],output_node.inputs["Surface"])
-    if (material==bpy.data.materials.get("Stationary_Lava") or material==bpy.data.materials.get("Flowing_Lava")) and LAVA_ANIMATION==True:
-        pass
     
 def Transparent_Emiting_Shader(material):
     nodes, node_tree = Setup_Node_Tree(material)
