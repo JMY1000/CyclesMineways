@@ -39,6 +39,13 @@
 # Run Blender through the terminal.
 
 
+
+#importing the Blender Python library
+import bpy
+print("Libraries imported")
+
+
+
 # CONSTANTS
 
 
@@ -870,6 +877,7 @@ def main():
                     #if the material is stationary water or a lily pad, use a special shader
                     elif material==bpy.data.materials.get("Stationary_Water"+material_suffix) or material==bpy.data.materials.get("Water"+material_suffix) or material==bpy.data.materials.get("Lily_Pad"+material_suffix):
                         print(material.name+" is water or a lily pad.")
+                        print("Using shader type",WATER_SHADER_TYPE)
                         if WATER_SHADER_TYPE==0:
                             Normal_Shader(material,texture_rgba_image)
                         elif WATER_SHADER_TYPE==1:
@@ -935,14 +943,57 @@ def main():
                 print("Texture "+img.name+" was not removed.") # only non-Mineways files can get here, or PREFIX.RGBA.png
     print("Finished removing unnecessary textures")
 
+ 
+class OBJECT_PT_water_changer(bpy.types.Panel):
+    bl_label = "Water Types"
+    bl_space_type = "PROPERTIES"
+    bl_region_type = "WINDOW"
+    bl_context = "scene"
+    
+ 
+    def draw(self, context):
+        self.layout.operator("object.water_changer", text='Use Solid Water').type="0"
+        self.layout.operator("object.water_changer", text='Use Transparent Water').type="1"
+        self.layout.operator("object.water_changer", text='Use Choppy Water').type="2"
+        self.layout.operator("object.water_changer", text='Use Wavey Water').type="3"
+ 
+ 
+class OBJECT_OT_water_changer(bpy.types.Operator):
+    bl_label = "Change Water Shader"
+    bl_idname = "object.water_changer"
+    bl_description = "Change water shader"
+    type = bpy.props.StringProperty()
+ 
+    def execute(self, context):
+        print("self:",self.type,"len",len(self.type))
+        print("selected object:",context.object)
+        self.report({'INFO'}, "Set water to type "+self.type)
+        global WATER_SHADER_TYPE
+        if self.type=="0":
+            print("setting to type 0")
+            WATER_SHADER_TYPE=0
+        elif self.type=="1":
+            print("setting to type 1")
+            WATER_SHADER_TYPE=1
+        elif self.type=="2":
+            print("setting to type 2")
+            WATER_SHADER_TYPE=2
+        elif self.type=="3":
+            print("setting to type 3")
+            WATER_SHADER_TYPE=3
+        main()
+        return{'FINISHED'}
+ 
+def register():
+    bpy.utils.register_module(__name__)
+ 
+def unregister():
+    bpy.utils.unregister_module(__name__)
+ 
+if __name__ == "__main__":
+    print("\nStarted Cycles Mineways import script.\n")
 
+    main()
+    register()
 
-print("\nStarted Cycles Mineways import script.\n")
-
-#importing the Blender Python library
-import bpy
-print("Libraries imported")
-
-main()
-
-print("\nCycles Mineways has finished.\n")
+    print("\nCycles Mineways has finished.\n")
