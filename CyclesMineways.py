@@ -82,7 +82,7 @@ DISPLACE_WOOD = False
 # STAINED_GLASS_COLOR controls how coloured the light that passed through stained glass is.
 # 0 means light passed through unchanged
 # 1 means all the light is changed to the glass's color (not recommended)
-STAINED_GLASS_COLOR = 0.2
+STAINED_GLASS_COLOR = 0.4
 
 
 #List of transparent blocks
@@ -289,15 +289,20 @@ def Stained_Glass_Shader(material):
     hsv_node.location=(-900,280)
     hsv_node.inputs[1].default_value=2
     hsv_node.inputs[2].default_value=8
-    #Create math(multiply) node
+    #Create math(multiply, clamped) node
     multiply_node=nodes.new('ShaderNodeMath')
     multiply_node.location=(-900,450)
     multiply_node.operation=('MULTIPLY')
     multiply_node.use_clamp=True
     multiply_node.inputs[1].default_value=STAINED_GLASS_COLOR
+    #Create math(add, clamped) node
+    add_node=nodes.new('ShaderNodeMath')
+    add_node.location=(-1200,450)
+    add_node.operation=('ADD')
+    add_node.use_clamp=True
     #Create the lightpath node
     light_path_node=nodes.new('ShaderNodeLightPath')
-    light_path_node.location=(-1200,450)
+    light_path_node.location=(-1500,450)
     #Create the diffuse node
     diffuse_node=nodes.new('ShaderNodeBsdfDiffuse')
     diffuse_node.location=(-900,0)
@@ -312,7 +317,9 @@ def Stained_Glass_Shader(material):
     links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
     links.new(rgba_node.outputs["Alpha"],mix_node.inputs["Fac"])
     links.new(rgba_node.outputs["Color"],hsv_node.inputs["Color"])
-    links.new(light_path_node.outputs[1],multiply_node.inputs[0]) #connects Is Shadow Ray to multiply node
+    links.new(light_path_node.outputs[1],add_node.inputs[0]) #connects Is Shadow Ray to add node
+    links.new(light_path_node.outputs[2],add_node.inputs[1]) #connects Is Shadow Ray to add node
+    links.new(add_node.outputs[0],multiply_node.inputs[0])
     links.new(multiply_node.outputs["Value"],shadow_color_mix_node.inputs["Fac"])
     links.new(hsv_node.outputs["Color"],shadow_color_mix_node.inputs[2])
     links.new(shadow_color_mix_node.outputs["Color"],transparent_node.inputs["Color"])
