@@ -777,7 +777,7 @@ def main():
     
     #Setting the render engine to Cycles and filtering materials to change
     print("Setting the render engine to Cycles and filtering materials to change")
-    materials = []
+    global materials = []
     if len(USER_INPUT_SCENE)==0:
         for scene in bpy.data.scenes:
             scene.render.engine = 'CYCLES'
