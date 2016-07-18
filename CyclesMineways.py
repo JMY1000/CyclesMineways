@@ -754,7 +754,7 @@ def main():
     print("Gettting PREFIX ('"+PREFIX+"')")
     
     if PREFIX == "":
-        print("Finding best PREFIX")
+        print("No prefix found, finding best PREFIX")
         names={} # initalises a dictionary
         for img in bpy.data.images: # loops through all images in .blend file
             pos = max( # sets pos to be the max value of the 3 values
@@ -762,7 +762,7 @@ def main():
                 img.name.rfind("-RGB.png"), # if "-RGB.png" is in the file name, returns non -1, else returns -1
                 img.name.rfind("-Alpha.png")) # if "-Alpha.png" is in the file name, returns non -1, else returns -1
                 # all this max statement really does is checks if the string contains any of those strings, if not, it is -1
-            print("checking:",img.name,pos,img.name[:pos])
+            print("Checking:",img.name,"(Position: ",pos,"Prefix: ",img.name[:pos]+")")
             if pos!=-1: # if pos==1, it does not contain "-RGBA.png" or "-RGB.png" or "-Alpha.png"
                 try:
                     names[img.name[:pos]]+=1 # if a key called the file name in the dictionary exists, increase its value by 1
