@@ -775,20 +775,23 @@ def main():
     print("Got PREFIX ('"+PREFIX+"')")
     
     
-    #Setting the render engine to Cycles and filtering materials to change
-    print("Setting the render engine to Cycles and filtering materials to change")
+    #Setting the render engine to Cycles and filtering materials that will be processed
+    print("Setting the render engine to Cycles and filtering materials that will be processed")
     global materials = []
+    #if the user doesn't provide any scnes, add all materials that exist to global "materials"
     if len(USER_INPUT_SCENE)==0:
         for scene in bpy.data.scenes:
             scene.render.engine = 'CYCLES'
         for material in bpy.data.materials:
             materials.append(material)
+    #else for each scene provided
     else:
         for scene in bpy.data.scenes:
-            print("checking for:",scene.name)
+            print("Checking for:",scene.name)
             if scene.name in USER_INPUT_SCENE:
                 print("Adding materials from scene:",scene.name)
                 scene.render.engine='CYCLES'
+                #check to see if it's related to Mineways by checking if it has an active material
                 for object in scene.objects:
                     if object.active_material!=None: # This is a bad way or checking of an object is Mineways'
                         # we probably need to check its assigned texture, or name to see if it is one of our objects
