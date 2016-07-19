@@ -108,7 +108,7 @@ def Setup_Node_Tree(material):
     for eachNode in nodes:
         nodes.remove(eachNode)
     return nodes,node_tree
-    
+
 
 def Normal_Shader(material,rgba_image):
     nodes, node_tree = Setup_Node_Tree(material)
@@ -128,7 +128,7 @@ def Normal_Shader(material,rgba_image):
     links=node_tree.links
     links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
     links.new(diffuse_node.outputs["BSDF"],output_node.inputs["Surface"])
-    
+
 def Transparent_Shader(material):
     nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
@@ -156,7 +156,7 @@ def Transparent_Shader(material):
     links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
     links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
     links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
-    
+
 def Light_Emiting_Shader(material):
     nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
@@ -199,7 +199,7 @@ def Light_Emiting_Shader(material):
     links.new(direct_emission_node.outputs["Emission"],diffuse_mix_node.inputs[1])
     links.new(light_path_node.outputs[2],diffuse_mix_node.inputs["Fac"]) #links "is diffuse ray" to factor of mix node
     links.new(diffuse_mix_node.outputs["Shader"],output_node.inputs["Surface"])
-    
+
 def Transparent_Emiting_Shader(material):
     nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
@@ -227,13 +227,13 @@ def Transparent_Emiting_Shader(material):
     links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
     links.new(emission_node.outputs["Emission"],mix_node.inputs[2])
     links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
-    
+
 def Lily_Pad_Shader(material):
     #A water setup shader should have ran before this
     #Set the variable node_tree to be the material's node tree and variable nodes to be the node tree's nodes
     node_tree=material.node_tree
     nodes=material.node_tree.nodes
-    
+
     output = None
     image_node = None
     for node in nodes:
@@ -243,21 +243,21 @@ def Lily_Pad_Shader(material):
             image_node=node
     output.location = (600,300)
     water_output = output.inputs[0].links[0].from_node
-    
+
     mix_node = nodes.new('ShaderNodeMixShader')
     mix_node.location=(300,500)
-    
+
     diffuse_node = nodes.new('ShaderNodeBsdfDiffuse')
     diffuse_node.location=(0,500)
-    
+
     RGB_splitter_node = nodes.new('ShaderNodeSeparateRGB')
     RGB_splitter_node.location=(-300,700)
-    
+
     less_than_node = nodes.new('ShaderNodeMath')
     less_than_node.location=(0,700)
     less_than_node.operation="LESS_THAN"
-    
-    
+
+
     links=node_tree.links
     links.new(mix_node.outputs[0],output.inputs[0])
     links.new(diffuse_node.outputs[0],mix_node.inputs[1])
@@ -267,8 +267,8 @@ def Lily_Pad_Shader(material):
     links.new(RGB_splitter_node.outputs[2],less_than_node.inputs[1])
     links.new(RGB_splitter_node.outputs[1],less_than_node.inputs[0])
     links.new(image_node.outputs[0],RGB_splitter_node.inputs[0])
-    
-    
+
+
 def Stained_Glass_Shader(material):
     nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
@@ -370,9 +370,9 @@ def Stationary_Water_Shader_1(material):
     links.new(mix_node.outputs["Shader"],fresnel_mix_node.inputs[1])
     links.new(glossy_node.outputs["BSDF"],fresnel_mix_node.inputs[2])
     links.new(fresnel_mix_node.outputs["Shader"],output_node.inputs["Surface"])
-    
 
-    
+
+
 def Stationary_Water_Shader_2(material):
     nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
@@ -455,7 +455,7 @@ def Stationary_Water_Shader_2(material):
     links.new(glossy_node.outputs["BSDF"],mix_node_ref_glossy.inputs[2])
     links.new(rgba_node.outputs["Color"],refraction_node.inputs["Color"])
     links.new(rgba_node.outputs["Color"],diffuse_node.inputs["Color"])
-    
+
     links.new(multiply_node.outputs["Value"],output_node.inputs["Displacement"])
     links.new(add_node.outputs["Value"],multiply_node.inputs[0])
     links.new(voronoi_node.outputs["Fac"],add_node.inputs[0])
@@ -463,7 +463,7 @@ def Stationary_Water_Shader_2(material):
     links.new(voronoi_node_two.outputs["Fac"],multiply_node_two.inputs[0])
     links.new(texture_coordinate_node.outputs["Object"],voronoi_node.inputs["Vector"])
     links.new(texture_coordinate_node.outputs["Object"],voronoi_node_two.inputs["Vector"])
-    
+
 def Stationary_Water_Shader_3(material):
     nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
@@ -524,7 +524,7 @@ def Stationary_Water_Shader_3(material):
 
 def Flowing_Water_Shader(material):
     material.use_nodes=True
-    
+
 def Slime_Shader(material):
     nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
@@ -578,7 +578,7 @@ def Ice_Shader(material):
     links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
     links.new(diffuse_node.outputs["BSDF"],mix_node.inputs[2])
     links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
-    
+
 def Sky_Day_Shader(world):
     nodes, node_tree = Setup_Node_Tree(world)
     #Add the output node
@@ -599,7 +599,7 @@ def Sky_Day_Shader(world):
     links.new(background_node.outputs["Background"],output_node.inputs["Surface"])
     links.new(sky_node.outputs["Color"],HSV_node.inputs["Color"])
     links.new(HSV_node.outputs["Color"],background_node.inputs["Color"])
-    
+
 
 def Sky_Night_Shader(world):
     nodes, node_tree = Setup_Node_Tree(world)
@@ -642,7 +642,7 @@ def Sky_Night_Shader(world):
     voronoi_node.location=(-1200,300)
     voronoi_node.coloring=("CELLS")
     voronoi_node.inputs["Scale"].default_value=200
-    
+
     #Link the nodes
     links=node_tree.links
     links.new(diffuse_mixer_node.outputs["Shader"],output_node.inputs["Surface"])
@@ -671,50 +671,50 @@ def Wood_Displacement_Texture(material,rgba_image):
     rgba_node.interpolation=('Closest')
     rgba_node.location=(-300,300)
     rgba_node.label = "RGBA"
-    
+
     #Create displacement node tree
-    
+
     #Create magic node 1
     magic_node_one=nodes.new('ShaderNodeTexMagic')
     magic_node_one.location=(-900,200)
     magic_node_one.turbulence_depth=6 #sets depth to 6
     magic_node_one.inputs[1].default_value=5 #sets scale to 5
     magic_node_one.inputs[2].default_value=10 #sets distortion to 10
-    
+
     #Create magic node 2
     magic_node_two=nodes.new('ShaderNodeTexMagic')
     magic_node_two.location=(-900,0)
     magic_node_two.turbulence_depth=5 #sets depth to 5
     magic_node_two.inputs[1].default_value=3.3 #sets scale to 3.3
     magic_node_two.inputs[2].default_value=2.7 #sets distortion to 2.7
-    
+
     #Create Add node
     #Connects to magic node 1 and 2
     math_add_node_one=nodes.new('ShaderNodeMath')
     math_add_node_one.location=(-600,0)
     math_add_node_one.operation="ADD"
-    
+
     #Create noise texture
     noise_node=nodes.new('ShaderNodeTexNoise')
     noise_node.location=(-900,-200)
     noise_node.inputs[1].default_value=6.9 #sets scale to 6.9
     noise_node.inputs[2].default_value=5 #set detail to 5
     noise_node.inputs[3].default_value=8 #sets distortion to 8
-    
+
     #Create multiply
     #Connects to noise and 5
     math_multiply_node=nodes.new('ShaderNodeMath')
     math_multiply_node.location=(-600,-200)
     math_multiply_node.operation="MULTIPLY"
     math_multiply_node.inputs[1].default_value=5 #sets multiply value to 5
-    
+
     #Create 2nd Add node
     #Connects to Add node and multiply node
     math_add_node_two=nodes.new('ShaderNodeMath')
     math_add_node_two.operation="ADD"
     math_add_node_two.location=(-300,0)
-    
-    
+
+
     #Create Divide node
     #Connect from 2nd add node and input [1] to 10
     #Connects to materials output
@@ -722,7 +722,7 @@ def Wood_Displacement_Texture(material,rgba_image):
     math_divide_node.location=(0,150)
     math_divide_node.operation="DIVIDE"
     math_divide_node.inputs[1].default_value=10
-    
+
     #Link the nodes
     links=node_tree.links
     #link surface modifiers
@@ -741,18 +741,18 @@ def Wood_Displacement_Texture(material,rgba_image):
 #MAIN
 
 def main():
-    
+
     print("Main started")
 
-    #packing all the files into one .blend 
+    #packing all the files into one .blend
     print("Packing files")
     bpy.ops.file.pack_all()
     print("Files packed")
-    
+
     #finding the PREFIX for mineways
     global PREFIX
     print("Gettting PREFIX ('"+PREFIX+"')")
-    
+
     if PREFIX == "":
         print("No prefix found, finding best PREFIX")
         names={} # initalises a dictionary
@@ -773,8 +773,8 @@ def main():
         PREFIX = max(names) # finds the name of the key in the dictionary that has the highest value
         # this is how the code determines what the PREFIX should be (majority vote)
     print("Got PREFIX ('"+PREFIX+"')")
-    
-    
+
+
     #Setting the render engine to Cycles and filtering materials that will be processed
     print("Setting the render engine to Cycles and filtering materials that will be processed")
     global materials = []
@@ -797,81 +797,79 @@ def main():
                         # we probably need to check its assigned texture, or name to see if it is one of our objects
                         materials.append(object.active_material)
     print("Render engine set to Cycles for selected scenes")
-            
-    
+
+
     try:
         texture_rgba_image = bpy.data.images[PREFIX+"-RGBA.png"]
     except:
         print("Cannot find image. PREFIX is invalid.")
         return
-    
-    
+
+
     print("Setting up textures")
     #for every material
     for material in materials:
-        if material.active_texture:
-            if len(material.active_texture.name)>=2:
-                if (material.active_texture.name[0:2]=="Kd"):
-                    material_suffix = material.name[material.name.rfind("."):len(material.name)] # gets the .001 .002 .003 ... of the material
-                    try:
-                        int(material_suffix[1:])
-                    except:
-                        material_suffix=""
-                    #if the material is transparent use a special shader
-                    if any(material==bpy.data.materials.get(transparentBlock+material_suffix) for transparentBlock in transparentBlocks):
-                        print(material.name+" is transparent.")
-                        Transparent_Shader(material)
-                    #if the material is a light emmitting block use a special shader
-                    elif any(material==bpy.data.materials.get(lightBlock+material_suffix) for lightBlock in lightBlocks):
-                        print(material.name+" is light block.")
-                        Light_Emiting_Shader(material)
-                    #if the material is a light emmitting transparent block use a special shader
-                    elif any(material==bpy.data.materials.get(lightTransparentBlocks+material_suffix) for lightTransparentBlocks in lightTransparentBlocks):
-                        print(material.name+" is transparent light block.")
-                        Transparent_Emiting_Shader(material)
-                    #if the material is stained glass, use a special shader
-                    elif material==bpy.data.materials.get("Stained_Glass"+material_suffix):
-                        print(material.name+" is stained glass.")
-                        Stained_Glass_Shader(material)
-                    #if the material is stationary water or a lily pad, use a special shader
-                    elif material==bpy.data.materials.get("Stationary_Water"+material_suffix) or material==bpy.data.materials.get("Water"+material_suffix) or material==bpy.data.materials.get("Lily_Pad"+material_suffix):
-                        print(material.name+" is water or a lily pad.")
-                        print("Using shader type",WATER_SHADER_TYPE)
-                        if WATER_SHADER_TYPE==0:
-                            Normal_Shader(material,texture_rgba_image)
-                        elif WATER_SHADER_TYPE==1:
-                            Stationary_Water_Shader_1(material)
-                        elif WATER_SHADER_TYPE==2:
-                            Stationary_Water_Shader_2(material)
-                        elif WATER_SHADER_TYPE==3:
-                            Stationary_Water_Shader_3(material)
-                        else:
-                            print("ERROR! COULD NOT SET UP WATER")
-                            Normal_Shader(material,texture_rgba_image)
-                        if material==bpy.data.materials.get("Lily_Pad"+material_suffix):
-                            Lily_Pad_Shader(material)
-                    #if the material is flowing water, use a special shader
-                    elif material==bpy.data.materials.get("Flowing_Water"+material_suffix):
-                        print(material.name+" is flowing water.")
-                        pass
-                    #if the material is slime, use a special shader
-                    elif material==bpy.data.materials.get("Slime"+material_suffix):
-                        print(material.name+" is slime.")
-                        Slime_Shader(material)
-                    #if the material is ice, use a special shader
-                    elif material==bpy.data.materials.get("Ice"+material_suffix):
-                        print(material.name+" is ice.")
-                        Ice_Shader(material)
-                    #if the material is wood and DISPLACE_WOOD is True
-                    elif (material==bpy.data.materials.get("Oak_Wood_Planks"+material_suffix))and(DISPLACE_WOOD):
-                        print(material.name+" is displaced wooden planks.")
-                        Wood_Displacement_Texture(material,texture_rgba_image)
-                    #else use a normal shader
-                    else:
-                        print(material.name+" is normal.")
-                        Normal_Shader(material,texture_rgba_image)
+        if (material.active_texture and len(material.active_texture.name)>=2 and material.active_texture.name[0:2]=="Kd"):
+            material_suffix = material.name[material.name.rfind("."):len(material.name)] # gets the .001 .002 .003 ... of the material
+            try:
+                int(material_suffix[1:])
+            except:
+                material_suffix=""
+            #if the material is transparent use a special shader
+            if any(material==bpy.data.materials.get(transparentBlock+material_suffix) for transparentBlock in transparentBlocks):
+                print(material.name+" is transparent.")
+                Transparent_Shader(material)
+            #if the material is a light emmitting block use a special shader
+            elif any(material==bpy.data.materials.get(lightBlock+material_suffix) for lightBlock in lightBlocks):
+                print(material.name+" is light block.")
+                Light_Emiting_Shader(material)
+            #if the material is a light emmitting transparent block use a special shader
+            elif any(material==bpy.data.materials.get(lightTransparentBlocks+material_suffix) for lightTransparentBlocks in lightTransparentBlocks):
+                print(material.name+" is transparent light block.")
+                Transparent_Emiting_Shader(material)
+            #if the material is stained glass, use a special shader
+            elif material==bpy.data.materials.get("Stained_Glass"+material_suffix):
+                print(material.name+" is stained glass.")
+                Stained_Glass_Shader(material)
+            #if the material is stationary water or a lily pad, use a special shader
+            elif material==bpy.data.materials.get("Stationary_Water"+material_suffix) or material==bpy.data.materials.get("Water"+material_suffix) or material==bpy.data.materials.get("Lily_Pad"+material_suffix):
+                print(material.name+" is water or a lily pad.")
+                print("Using shader type",WATER_SHADER_TYPE)
+                if WATER_SHADER_TYPE==0:
+                    Normal_Shader(material,texture_rgba_image)
+                elif WATER_SHADER_TYPE==1:
+                    Stationary_Water_Shader_1(material)
+                elif WATER_SHADER_TYPE==2:
+                    Stationary_Water_Shader_2(material)
+                elif WATER_SHADER_TYPE==3:
+                    Stationary_Water_Shader_3(material)
+                else:
+                    print("ERROR! COULD NOT SET UP WATER")
+                    Normal_Shader(material,texture_rgba_image)
+                if material==bpy.data.materials.get("Lily_Pad"+material_suffix):
+                    Lily_Pad_Shader(material)
+            #if the material is flowing water, use a special shader
+            elif material==bpy.data.materials.get("Flowing_Water"+material_suffix):
+                print(material.name+" is flowing water.")
+                pass
+            #if the material is slime, use a special shader
+            elif material==bpy.data.materials.get("Slime"+material_suffix):
+                print(material.name+" is slime.")
+                Slime_Shader(material)
+            #if the material is ice, use a special shader
+            elif material==bpy.data.materials.get("Ice"+material_suffix):
+                print(material.name+" is ice.")
+                Ice_Shader(material)
+            #if the material is wood and DISPLACE_WOOD is True
+            elif (material==bpy.data.materials.get("Oak_Wood_Planks"+material_suffix))and(DISPLACE_WOOD):
+                print(material.name+" is displaced wooden planks.")
+                Wood_Displacement_Texture(material,texture_rgba_image)
+            #else use a normal shader
+            else:
+                print(material.name+" is normal.")
+                Normal_Shader(material,texture_rgba_image)
     print("Finished setting up materials")
-        
+
     #Set up the sky
     print("Started shading sky")
     for world in bpy.data.worlds:
@@ -880,7 +878,7 @@ def main():
         else:
             Sky_Night_Shader(world)
     print("Sky shaded")
-    
+
     #Remove unnecessary textures
     print("Removing unnecessary textures")
     for img in bpy.data.images: # loops through all images in ,blend file
@@ -902,27 +900,27 @@ def main():
                 print("Texture "+img.name+" was not removed.") # only non-Mineways files can get here, or PREFIX.RGBA.png
     print("Finished removing unnecessary textures")
 
- 
+
 class OBJECT_PT_water_changer(bpy.types.Panel):
     bl_label = "Water Types"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
     bl_context = "scene"
-    
- 
+
+
     def draw(self, context):
         self.layout.operator("object.water_changer", text='Use Solid Water').type="0"
         self.layout.operator("object.water_changer", text='Use Transparent Water').type="1"
         self.layout.operator("object.water_changer", text='Use Choppy Water').type="2"
         self.layout.operator("object.water_changer", text='Use Wavey Water').type="3"
- 
- 
+
+
 class OBJECT_OT_water_changer(bpy.types.Operator):
     bl_label = "Change Water Shader"
     bl_idname = "object.water_changer"
     bl_description = "Change water shader"
     type = bpy.props.StringProperty()
- 
+
     def execute(self, context):
         print("self:",self.type,"len",len(self.type))
         print("selected object:",context.object)
@@ -942,13 +940,13 @@ class OBJECT_OT_water_changer(bpy.types.Operator):
             WATER_SHADER_TYPE=3
         main()
         return{'FINISHED'}
- 
+
 def register():
     bpy.utils.register_module(__name__)
- 
+
 def unregister():
     bpy.utils.unregister_module(__name__)
- 
+
 if __name__ == "__main__":
     print("\nStarted Cycles Mineways import script.\n")
 
