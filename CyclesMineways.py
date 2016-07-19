@@ -777,7 +777,7 @@ def main():
 
     #Setting the render engine to Cycles and filtering materials that will be processed
     print("Setting the render engine to Cycles and filtering materials that will be processed")
-    global materials = []
+    materials = []
     #if the user doesn't provide any scenes, add all materials that exist to global "materials"
     if len(USER_INPUT_SCENE)==0:
         for scene in bpy.data.scenes:
