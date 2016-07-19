@@ -1,3 +1,5 @@
+Improved nether portal shader including transparency
+
 Additional lighting styles based on time of day
 
 Nether and end environment shaders
