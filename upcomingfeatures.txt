@@ -10,8 +10,11 @@ Rotation of sunflowers based on time of day
   Requires altering geometry
   Requires basic trig calculations
 
+Varying light levels for emitting blocks
+  Might require restructuring of block metadata to be feasible
+
 Animated background stars
-  Requires scripting of parts of the engine not yet explored (timeline) 
+  Requires scripting of parts of the engine not yet explored (timeline)
   
 Sprites for sun and moon
   Requires access to texture files that aren't currently provided
