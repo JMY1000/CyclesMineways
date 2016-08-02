@@ -174,8 +174,8 @@ def Light_Emiting_Shader(material):
     #Create the Light Falloff node for indirect emission
     light_falloff_node=nodes.new('ShaderNodeLightFalloff')
     light_falloff_node.location=(-300,0)
-    light_falloff_node.inputs[0].default_value=700 #sets strength of light
-    light_falloff_node.inputs[1].default_value=0.05 #sets smooth level of light
+    light_falloff_node.inputs[0].default_value=200 #sets strength of light
+    light_falloff_node.inputs[1].default_value=0.03 #sets smooth level of light
     #Create the HSV node to brighten the light
     hsv_node=nodes.new('ShaderNodeHueSaturation')
     hsv_node.location=(-300,200)
@@ -194,7 +194,7 @@ def Light_Emiting_Shader(material):
     links.new(rgba_node.outputs["Color"],direct_emission_node.inputs["Color"])
     links.new(rgba_node.outputs["Color"],hsv_node.inputs["Color"])
     links.new(hsv_node.outputs["Color"],indirect_emission_node.inputs["Color"])
-    links.new(light_falloff_node.outputs[1],indirect_emission_node.inputs[1]) #connects linear output to emission strength
+    links.new(light_falloff_node.outputs[0],indirect_emission_node.inputs[1]) #connects quadratic output to emission strength
     links.new(indirect_emission_node.outputs["Emission"],diffuse_mix_node.inputs[2])
     links.new(direct_emission_node.outputs["Emission"],diffuse_mix_node.inputs[1])
     links.new(light_path_node.outputs[2],diffuse_mix_node.inputs["Fac"]) #links "is diffuse ray" to factor of mix node
@@ -204,11 +204,28 @@ def Transparent_Emiting_Shader(material):
     nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
     output_node=nodes.new('ShaderNodeOutputMaterial')
-    output_node.location=(300,300)
+    output_node.location=(600,300)
+    #Create the indirect-direct mix shader
+    indirect_mix_node=nodes.new('ShaderNodeMixShader')
+    indirect_mix_node.location=(300,300)
     #Create the mix shader
     mix_node=nodes.new('ShaderNodeMixShader')
     mix_node.location=(0,300)
-    #Create the diffuse node
+    #Create the Light Path node to check if light is indirect
+    light_path_node=nodes.new('ShaderNodeLightPath')
+    light_path_node.location=(0,800)
+    
+    #Create the Light Falloff node for indirect emission
+    light_falloff_node=nodes.new('ShaderNodeLightFalloff')
+    light_falloff_node.location=(-300,600)
+    light_falloff_node.inputs[0].default_value=80 #sets strength of light
+    light_falloff_node.inputs[1].default_value=0.03 #sets smooth level of light
+    #Create the indirect emission node
+    indirect_emission_node=nodes.new('ShaderNodeEmission')
+    indirect_emission_node.location=(0,500)
+    indirect_emission_node.inputs["Color"].default_value = (1,1,0.56,1)
+    #Only tested color on torches, needs testing on other transparent emitters to see if it looks weird
+    #Create the direct emission node
     emission_node=nodes.new('ShaderNodeEmission')
     emission_node.location=(-300,400)
     #Create the transparent node
@@ -226,7 +243,13 @@ def Transparent_Emiting_Shader(material):
     links.new(rgba_node.outputs["Alpha"],mix_node.inputs["Fac"])
     links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
     links.new(emission_node.outputs["Emission"],mix_node.inputs[2])
-    links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
+    links.new(mix_node.outputs["Shader"],indirect_mix_node.inputs[1])
+    
+    links.new(light_falloff_node.outputs["Quadratic"],indirect_emission_node.inputs["Strength"])
+    links.new(indirect_emission_node.outputs["Emission"],indirect_mix_node.inputs[2])
+    links.new(light_path_node.outputs["Is Diffuse Ray"],indirect_mix_node.inputs["Fac"])
+    
+    links.new(indirect_mix_node.outputs["Shader"],output_node.inputs["Surface"])
 
 def Lily_Pad_Shader(material):
     #A water setup shader should have ran before this
