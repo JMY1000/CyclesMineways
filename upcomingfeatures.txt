@@ -6,6 +6,9 @@ Nether and end environment shaders
 
 Better glass shader
 
+Proper texturing for wood logs (all surfaces use outer texture)
+  Might require with new texturing pieces
+
 Rotation of sunflowers based on time of day
   Requires altering geometry
   Requires basic trig calculations
