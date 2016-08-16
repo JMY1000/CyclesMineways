@@ -12,7 +12,7 @@ Solid light emitters (like glowstone) now emit 200 light instead of 700
 Lily pads now use proper water shaders
 Night shader now works properly with camera movement
 Big improvements to the avaliable water shaders
-Buttons in the "Scene" tab (in your object settings) to quickly change water type (for comparison)
+  More realistic (using fresnel, volume absortion)
 Code has been cleaned up
   Unused constants have been removed
   Unused sun shader function removed
