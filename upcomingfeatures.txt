@@ -6,6 +6,9 @@ Nether and end environment shaders
 
 Better glass shader
 
+Additional user-controllable variables for water shaders (Turbitity option, waviness option, color and/or volume absorsion/clarity option)
+  Probably requires restructuring water shader
+
 Proper texturing for wood logs (all surfaces use outer texture)
   Might require with new texturing pieces
 
