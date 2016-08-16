@@ -640,40 +640,35 @@ def Sky_Night_Shader(world):
     #Add mix shader to add the diffuse-only background
     diffuse_mixer_node=nodes.new('ShaderNodeMixShader')
     diffuse_mixer_node.location=(300,300)
-    #Add the mix node
-    mix_node=nodes.new('ShaderNodeMixShader')
-    mix_node.location=(0,300)
-    mix_node.inputs["Fac"].default_value=0.005
     #Add the first background node
     background_node=nodes.new('ShaderNodeBackground')
-    background_node.location=(-300,300)
+    background_node.location=(0,300)
     #Create the rgb mix shader
     rgbmix_node=nodes.new('ShaderNodeMixRGB')
-    rgbmix_node.location=(-500,300)
-    rgbmix_node.inputs["Fac"].default_value=0.05
+    rgbmix_node.location=(-200,300)
+    rgbmix_node.inputs["Fac"].default_value=0.01
     #Add the sky texture node
     sky_node=nodes.new('ShaderNodeTexSky')
-    sky_node.location=(-900,0)
+    sky_node.location=(-600,0)
     #Add the colorramp node
     colorramp_node=nodes.new('ShaderNodeValToRGB')
-    colorramp_node.location=(-900,300)
+    colorramp_node.location=(-600,300)
     colorramp_node.color_ramp.interpolation=('CONSTANT')
     colorramp_node.color_ramp.elements[1].position=0.03
     colorramp_node.color_ramp.elements[1].color=(0,0,0,255)
     colorramp_node.color_ramp.elements[0].color=(255,255,255,255)
     #Add the voronoi texture
     voronoi_node=nodes.new('ShaderNodeTexVoronoi')
-    voronoi_node.location=(-1200,300)
+    voronoi_node.location=(-900,300)
     voronoi_node.coloring=("CELLS")
     voronoi_node.inputs["Scale"].default_value=200
 
     #Link the nodes
     links=node_tree.links
     links.new(diffuse_mixer_node.outputs["Shader"],output_node.inputs["Surface"])
-    links.new(mix_node.outputs["Shader"],diffuse_mixer_node.inputs[1])
     links.new(solid_background_node.outputs["Background"],diffuse_mixer_node.inputs[2])
     links.new(light_path_node.outputs["Is Diffuse Ray"],diffuse_mixer_node.inputs[0]) # connects "Is Diffuse Ray" to factor
-    links.new(background_node.outputs["Background"],mix_node.inputs[1])
+    links.new(background_node.outputs["Background"],diffuse_mixer_node.inputs[1])
     links.new(rgbmix_node.outputs["Color"],background_node.inputs["Color"])
     links.new(colorramp_node.outputs["Color"],rgbmix_node.inputs["Color1"])
     links.new(sky_node.outputs["Color"],rgbmix_node.inputs["Color2"])
