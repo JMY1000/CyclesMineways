@@ -92,7 +92,7 @@ transparentBlocks = ["Acacia_Leaves","Dark_Oak_Leaves","Acacia_Door","Activator_
     "Leaves","Melon_Stem","Monster_Spawner","Nether_Portal","Nether_Wart","Oak_Leaves","Oak_Sapling","Poppy","Potato","Potatoes","Powered_Rail","Powered_Rail_(off)","Pumpkin_Stem","Rail","Red_Mushroom",
     "Redstone_Comparator_(inactive)","Redstone_Torch_(inactive)","Repeater_(inactive)","Sapling","Spruce_Door","Stained_Glass_Pane","Sugar_Cane","Sunflower","Tall_Grass","Trapdoor","Vines","Wheat","Wooden_Door"]
 #List of light emitting blocks
-lightBlocks = ["End_Gateway","End_Portal","Ender_Chest","Flowing_Lava","Glowstone","Lava","Redstone_Lamp_(active)","Stationary_Lava","Sea_Lantern"]
+lightBlocks = ["Daylight_Sensor","End_Gateway","End_Portal","Ender_Chest","Flowing_Lava","Glowstone","Inverted_Daylight_Sensor","Lava","Redstone_Lamp_(active)","Stationary_Lava","Sea_Lantern"]
 #List of light emitting and transparent block
 lightTransparentBlocks = ["Beacon","Brown_Mushroom","Dragon_Egg","Endframe","End_Rod","Fire","Powered_Rail_(active)","Redstone_Comparator_(active)","Redstone_Torch_(active)","Repeater_(active)","Torch"]
 
