@@ -65,6 +65,7 @@ USER_INPUT_SCENE = []
 # Use 1 for a semi-transparent flat shader.
 # Use 2 for a small, sharp waves shader.
 # Use 3 for a wavy shader.
+# For a more detailed explanation with pictures of each water shader type, visit: https://github.com/JMY1000/CyclesMineways/wiki/Water-Shader-Types
 WATER_SHADER_TYPE = 1
 
 # TIME_OF_DAY controls the time of day.
