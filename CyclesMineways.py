@@ -92,7 +92,7 @@ transparentBlocks = ["Acacia_Leaves","Dark_Oak_Leaves","Acacia_Door","Activator_
     "Leaves","Melon_Stem","Monster_Spawner","Nether_Portal","Nether_Wart","Oak_Leaves","Oak_Sapling","Poppy","Potato","Potatoes","Powered_Rail","Pumpkin_Stem","Rail","Red_Mushroom",
     "Redstone_Comparator_(inactive)","Redstone_Torch_(inactive)","Repeater_(inactive)","Sapling","Spruce_Door","Stained_Glass_Pane","Sugar_Cane","Sunflower","Tall_Grass","Trapdoor","Vines","Wheat","Wooden_Door"]
 #List of light emitting blocks
-lightBlocks = ["Daylight_Sensor","End_Gateway","End_Portal","Ender_Chest","Flowing_Lava","Glowstone","Inverted_Daylight_Sensor","Lava","Redstone_Lamp_(active)","Stationary_Lava","Sea_Lantern"]
+lightBlocks = ["Daylight_Sensor","End_Gateway","End_Portal","Ender_Chest","Flowing_Lava","Glowstone","Inverted_Daylight_Sensor","Lava","Magma_Block","Redstone_Lamp_(active)","Stationary_Lava","Sea_Lantern"]
 #List of light emitting and transparent block
 lightTransparentBlocks = ["Beacon","Brown_Mushroom","Dragon_Egg","Endframe","End_Rod","Fire","Powered_Rail_(active)","Redstone_Comparator_(active)","Redstone_Torch_(active)","Repeater_(active)","Torch"]
 
@@ -215,7 +215,7 @@ def Transparent_Emiting_Shader(material):
     #Create the Light Path node to check if light is indirect
     light_path_node=nodes.new('ShaderNodeLightPath')
     light_path_node.location=(0,800)
-    
+
     #Create the Light Falloff node for indirect emission
     light_falloff_node=nodes.new('ShaderNodeLightFalloff')
     light_falloff_node.location=(-300,600)
@@ -245,11 +245,11 @@ def Transparent_Emiting_Shader(material):
     links.new(transparent_node.outputs["BSDF"],mix_node.inputs[1])
     links.new(emission_node.outputs["Emission"],mix_node.inputs[2])
     links.new(mix_node.outputs["Shader"],indirect_mix_node.inputs[1])
-    
+
     links.new(light_falloff_node.outputs["Quadratic"],indirect_emission_node.inputs["Strength"])
     links.new(indirect_emission_node.outputs["Emission"],indirect_mix_node.inputs[2])
     links.new(light_path_node.outputs["Is Diffuse Ray"],indirect_mix_node.inputs["Fac"])
-    
+
     links.new(indirect_mix_node.outputs["Shader"],output_node.inputs["Surface"])
 
 def Lily_Pad_Shader(material):
@@ -976,7 +976,7 @@ def register():
 
 def unregister():
     bpy.utils.unregister_module(__name__) # Needed to unregister the custom GUI components
-    
+
 ### END OF GUI CODE
 
 if __name__ == "__main__": # Standard python check to see if the code is being ran, or added as a module

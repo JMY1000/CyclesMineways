@@ -6,7 +6,7 @@
 
 ### Copyright © 2016 ###
 
-**Supports Minecraft 1.9.2 and Mineways 4.16**
+**Supports Minecraft 1.10.2 and Mineways 5.02a**
 
 Please send suggestions or report bugs to us via https://github.com/JMY1000/CyclesMineways/.
 

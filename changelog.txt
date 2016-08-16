@@ -13,6 +13,7 @@ Lily pads now use proper water shaders
 Night shader now works properly with camera movement
 Big improvements to the avaliable water shaders
   More realistic (using fresnel, volume absortion)
+Added 1.10.2/Mineways 5.02a support
 Code has been cleaned up
   Unused constants have been removed
   Unused sun shader function removed
