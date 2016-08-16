@@ -924,31 +924,36 @@ def main():
     print("Finished removing unnecessary textures")
 
 
-class OBJECT_PT_water_changer(bpy.types.Panel):
-    bl_label = "Water Types"
-    bl_space_type = "PROPERTIES"
-    bl_region_type = "WINDOW"
-    bl_context = "scene"
+### THE FOLLOWING CODE IS USED IN SETTING UP THE GUI, THIS FEATURE IS IN DEVELOPMENT.
+### the following code makes buttons in the scenes tab that allow hotswitching between water types
+
+class OBJECT_PT_water_changer(bpy.types.Panel): # The object used for drawing the buttons
+    bl_label = "Water Types" # the name of the sub-sub-catagory used
+    bl_space_type = "PROPERTIES" # the name of the main catagory used
+    bl_region_type = "WINDOW" # dunno
+    bl_context = "scene" # the name of the sub-catagory used
 
 
-    def draw(self, context):
-        self.layout.operator("object.water_changer", text='Use Solid Water').type="0"
-        self.layout.operator("object.water_changer", text='Use Transparent Water').type="1"
-        self.layout.operator("object.water_changer", text='Use Choppy Water').type="2"
-        self.layout.operator("object.water_changer", text='Use Wavey Water').type="3"
+    def draw(self, context): # called by blender when it wants to update the screen
+        self.layout.operator("object.water_changer", text='Use Solid Water').type="0" # draws water button 0
+        self.layout.operator("object.water_changer", text='Use Transparent Water').type="1" # draws water button 1
+        self.layout.operator("object.water_changer", text='Use Choppy Water').type="2" # draws water button 2
+        self.layout.operator("object.water_changer", text='Use Wavey Water').type="3" # draws water button 3
 
 
-class OBJECT_OT_water_changer(bpy.types.Operator):
-    bl_label = "Change Water Shader"
-    bl_idname = "object.water_changer"
-    bl_description = "Change water shader"
-    type = bpy.props.StringProperty()
+class OBJECT_OT_water_changer(bpy.types.Operator): # the object used for executing the buttons
+    bl_label = "Change Water Shader" # Used when pressing space on a viewport.
+    # Currently broken, as all the water type buttons go to one button.
+    bl_idname = "object.water_changer" # Used if another script wants to use this button
+    bl_description = "Change water shader" # Main text of the tool tip
+    type = bpy.props.StringProperty() # Gets the type data set in BJECT_PT_water_changer.draw()
 
     def execute(self, context):
         print("self:",self.type,"len",len(self.type))
         print("selected object:",context.object)
-        self.report({'INFO'}, "Set water to type "+self.type)
-        global WATER_SHADER_TYPE
+        self.report({'INFO'}, "Set water to type "+self.type) # Used by the progress bar thingy that
+        # tells you when stuff is done in Blender.
+        global WATER_SHADER_TYPE # Allows WATER_SHADER_TYPE to be set globally
         if self.type=="0":
             print("setting to type 0")
             WATER_SHADER_TYPE=0
@@ -961,19 +966,22 @@ class OBJECT_OT_water_changer(bpy.types.Operator):
         elif self.type=="3":
             print("setting to type 3")
             WATER_SHADER_TYPE=3
-        main()
-        return{'FINISHED'}
+        # Sets WATER_SHADER_TYPE to something
+        main() # Runs the main script
+        return{'FINISHED'} # Required by Blender
 
 def register():
-    bpy.utils.register_module(__name__)
+    bpy.utils.register_module(__name__) # Needed to register the custom GUI components
 
 def unregister():
-    bpy.utils.unregister_module(__name__)
+    bpy.utils.unregister_module(__name__) # Needed to unregister the custom GUI components
+    
+### END OF GUI CODE
 
-if __name__ == "__main__":
+if __name__ == "__main__": # Standard python check to see if the code is being ran, or added as a module
     print("\nStarted Cycles Mineways import script.\n")
 
-    main()
-    register()
+    main() # Runs the main script
+    #register() # Sets up the GUI
 
     print("\nCycles Mineways has finished.\n")
