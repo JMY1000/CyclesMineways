@@ -1,5 +1,5 @@
 Changelog for Mineways' Cycles import script
-Version 1.3
+Version 1.3.0
 
 PREFIX now no longer needs to be set
   If you have imported 2 or more minecraft .obj files, or you are importing into a big .blend file,
