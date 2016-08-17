@@ -1,3 +1,5 @@
+Pixilate stars in night shader (removed because it required tracking to the camera)
+
 Improved nether portal shader including transparency and light emittence
 
 Special ice shader
