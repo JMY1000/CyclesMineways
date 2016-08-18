@@ -1,5 +1,5 @@
 # Cycles Mineways setup
-# Version 1.3.0, 8/17/16
+# Version 1.3.0, 5/28/16
 # Copyright © 2016
 # Please send suggestions or report bugs at https://github.com/JMY1000/CyclesMineways/
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation under version 3 of the License.
