@@ -87,14 +87,14 @@ STAINED_GLASS_COLOR = 0.2
 
 
 #List of transparent blocks
-transparentBlocks = ["Acacia_Leaves","Dark_Oak_Leaves","Acacia_Door","Activator_Rail","Bed","Beetroot_Seeds","Birch_Door","Brewing_Stand","Cactus","Carrot","Carrots","Cauldron","Chorus_Flower","Chorus_Flower_Dead","Chorus_Plant","Cobweb",
-    "Cocoa","Crops","Dandelion","Dark_Oak_Door","Dead_Bush","Detector_Rail","Enchantment_Table","Glass","Glass_Pane","Grass","Iron_Bars","Iron_Door","Iron_Trapdoor","Jack_o'Lantern","Jungle_Door","Large_Flowers",
+transparentBlocks = ["Acacia_Leaves","Acacia_Door","Activator_Rail","Bed","Beetroot_Seeds","Brown_Mushroom","Birch_Door","Brewing_Stand","Cactus","Carrot","Carrots","Cauldron","Chorus_Flower","Chorus_Flower_Dead","Chorus_Plant","Cobweb",
+    "Cocoa","Crops","Dandelion","Dark_Oak_Door","Dark_Oak_Leaves","Dead_Bush","Detector_Rail","Dragon_Egg","Enchantment_Table","Glass","Glass_Pane","Grass","Iron_Bars","Iron_Door","Iron_Trapdoor","Jack_o'Lantern","Jungle_Door","Large_Flowers",
     "Leaves","Melon_Stem","Monster_Spawner","Nether_Portal","Nether_Wart","Oak_Leaves","Oak_Sapling","Poppy","Potato","Potatoes","Powered_Rail","Pumpkin_Stem","Rail","Red_Mushroom",
     "Redstone_Comparator_(inactive)","Redstone_Torch_(inactive)","Repeater_(inactive)","Sapling","Spruce_Door","Stained_Glass_Pane","Sugar_Cane","Sunflower","Tall_Grass","Trapdoor","Vines","Wheat","Wooden_Door"]
 #List of light emitting blocks
 lightBlocks = ["Daylight_Sensor","End_Gateway","End_Portal","Ender_Chest","Flowing_Lava","Glowstone","Inverted_Daylight_Sensor","Lava","Magma_Block","Redstone_Lamp_(active)","Stationary_Lava","Sea_Lantern"]
 #List of light emitting and transparent block
-lightTransparentBlocks = ["Beacon","Brown_Mushroom","Dragon_Egg","Endframe","End_Rod","Fire","Powered_Rail_(active)","Redstone_Comparator_(active)","Redstone_Torch_(active)","Repeater_(active)","Torch"]
+lightTransparentBlocks = ["Beacon","Endframe","End_Rod","Fire","Powered_Rail_(active)","Redstone_Comparator_(active)","Redstone_Torch_(active)","Repeater_(active)","Torch"]
 
 
 #SHADERS
