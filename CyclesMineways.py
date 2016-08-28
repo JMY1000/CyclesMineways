@@ -83,7 +83,7 @@ DISPLACE_WOOD = False
 # STAINED_GLASS_COLOR controls how coloured the light that passed through stained glass is.
 # 0 means light passed through unchanged
 # 1 means all the light is changed to the glass's color (not recommended)
-STAINED_GLASS_COLOR = 0.4
+STAINED_GLASS_COLOR = 0.2
 
 
 #List of transparent blocks
