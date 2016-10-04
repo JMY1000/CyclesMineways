@@ -66,7 +66,7 @@ USER_INPUT_SCENE = []
 # Use 2 for a small, sharp waves shader.
 # Use 3 for a wavy shader.
 # For a more detailed explanation with pictures of each water shader type, visit: https://github.com/JMY1000/CyclesMineways/wiki/Water-Shader-Types
-WATER_SHADER_TYPE = 1
+WATER_SHADER_TYPE = 0
 
 # TIME_OF_DAY controls the time of day.
 # If TIME_OF_DAY is between 6.5 and 19.5 (crossing 12), the daytime shader will be used.
@@ -352,28 +352,40 @@ def Stained_Glass_Shader(material):
     links.new(mix_node.outputs["Shader"],output_node.inputs["Surface"])
     
 
-def Water_Shader(material, surfaceblue, volumeblue, displacementtype, displacementamount):
+def Water_Shader(material, use_refraction, surface_blue, volume_blue, displacement_type, displacement_amount):
     """
-    material: standard passing of material to modify
+    material (material)
+    Standard passing of material to modify
+
+    use_refraction (boolean)
+    Whether to use refraction or transparency for the water surface
+    True: uses refraction
+    False: uses transparency
     
-    surfaceblue: the amount of 'blue' on the surface
-    0 means this function will use white for the surface (like real life)
-    1 means this function will use blue for the surface (like minecraft)
+    surface_blue (float) (between 0-1)
+    The amount of 'blue' on the surface
+    0: this function will use white for the surface (like real life)
+    1: means this function will use blue for the surface (like minecraft)
     
-    volumeblue: the amount of 'blue' in the water
+    volume_blue (float) (values 0+)
+    The amount of 'blue' in the water
     0 means this function will use no volume absorbsion
-    volumeblue can go up to any value (not recomended to go above 1)
+    volume_blue can go up to any value (not recomended to go above 1)
     
-    displacementtype: type of displacement to use
+    displacement_type (int)
+    Type of displacement to use
     0: no displacement
     1: choppy shader
     2: wave shader
-    NOTE: these values really should be stored in constants
+    DEVNOTE: these values really should be stored in constants
     
-    displacementamount: amount of displacement gain to use
+    displacement_amount (float) (values 0+)
+    Amount of displacement gain to use
     0: no displacement
     displacementamount can go up to any value (not recomended to go above 1)
     """
+    
+    
     nodes, node_tree = Setup_Node_Tree(material)
     #Create the output node
     output_node=nodes.new('ShaderNodeOutputMaterial')
@@ -384,7 +396,14 @@ def Water_Shader(material, surfaceblue, volumeblue, displacementtype, displaceme
     #Create Fresnel node ior=1.33
     fresnel_node=nodes.new('ShaderNodeFresnel')
     fresnel_node.location=(-300,400)
-    fresnel_node.inputs[0].default_value
+    fresnel_node.inputs[0].default_value = 1.33
+    #Create surface node
+    if use_refraction:
+        surface_node = nodes.new('ShaderNodeBsdfRefraction')
+    else:
+        surface_node = nodes.new('ShaderNodeBsdfTransparent')
+    surface_node.location=(-300,300)
+    
 
 
 def Stationary_Water_Shader_1(material):
@@ -890,7 +909,7 @@ def main():
                 print(material.name+" is water or a lily pad.")
                 print("Using shader type",WATER_SHADER_TYPE)
                 if WATER_SHADER_TYPE==0:
-                    Water_Shader(material,0.4,0.2,0,0)
+                    Water_Shader(material,False,0.4,0.2,0,0)
                 elif WATER_SHADER_TYPE==1:
                     Stationary_Water_Shader_1(material)
                 elif WATER_SHADER_TYPE==2:
