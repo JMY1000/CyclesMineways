@@ -2,9 +2,9 @@
 
 --------
 
-### Version 1.3.0, 5/28/16 ###
+### Version 1.4.0, 2017/06/09 ###
 
-### Copyright © 2016 ###
+### Copyright © 2017 ###
 
 **Supports Minecraft 1.10.2 and Mineways 5.02a**
 
