@@ -1,7 +1,7 @@
 Changelog for Mineways' Cycles import script
 Version 1.4.0
 
-
+Updated suffix detection ("Split materials into subtypes" option works again, though it's not handled in any special way)
 Some work on the new water shader
 Reduced stain class color vibrancy
 Updated coding style with more consistent variable names
