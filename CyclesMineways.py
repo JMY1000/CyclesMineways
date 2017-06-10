@@ -912,7 +912,7 @@ def main():
                 print(material.name+" is water or a lily pad.")
                 print("Using shader type", WATER_SHADER_TYPE)
                 if WATER_SHADER_TYPE == 0:
-                    water_shader(material, False, 0.4, 0.2, 0, 0)
+                    normal_shader(material, texture_rgba_image)
                 elif WATER_SHADER_TYPE == 1:
                     stationary_water_shader_1(material)
                 elif WATER_SHADER_TYPE == 2:
