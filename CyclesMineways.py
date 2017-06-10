@@ -87,9 +87,9 @@ STAINED_GLASS_COLOR = 0.2
 
 
 # List of transparent blocks
-TRANSPARENT_BLOCKS = ["Acacia_Leaves", "Acacia_Door", "Activator_Rail", "Bed", "Beetroot_Seeds", "Brown_Mushroom", "Birch_Door", "Brewing_Stand", "Cactus", "Carrot", "Carrots", "Cauldron", "Chorus_Flower", "Chorus_Flower_Dead", "Chorus_Plant", "Cobweb", 
-    "Cocoa", "Crops", "Dandelion", "Dark_Oak_Door", "Dark_Oak_Leaves", "Dead_Bush", "Detector_Rail", "Dragon_Egg", "Enchantment_Table", "Glass", "Glass_Pane", "Grass", "Iron_Bars", "Iron_Door", "Iron_Trapdoor", "Jack_o'Lantern", "Jungle_Door", "Large_Flowers", 
-    "Leaves", "Melon_Stem", "Monster_Spawner", "Nether_Portal", "Nether_Wart", "Oak_Leaves", "Oak_Sapling", "Poppy", "Potato", "Potatoes", "Powered_Rail", "Pumpkin_Stem", "Rail", "Red_Mushroom", 
+TRANSPARENT_BLOCKS = ["Acacia_Leaves", "Acacia_Door", "Activator_Rail", "Bed", "Beetroot_Seeds", "Brown_Mushroom", "Birch_Door", "Brewing_Stand", "Cactus", "Carrot", "Carrots", "Cauldron", "Chorus_Flower", "Chorus_Flower_Dead", "Chorus_Plant", "Cobweb",
+    "Cocoa", "Crops", "Dandelion", "Dark_Oak_Door", "Dark_Oak_Leaves", "Dead_Bush", "Detector_Rail", "Dragon_Egg", "Enchantment_Table", "Glass", "Glass_Pane", "Grass", "Iron_Bars", "Iron_Door", "Iron_Trapdoor", "Jack_o'Lantern", "Jungle_Door", "Large_Flowers",
+    "Leaves", "Melon_Stem", "Monster_Spawner", "Nether_Portal", "Nether_Wart", "Oak_Leaves", "Oak_Sapling", "Poppy", "Potato", "Potatoes", "Powered_Rail", "Pumpkin_Stem", "Rail", "Red_Mushroom",
     "Redstone_Comparator_(inactive)", "Redstone_Torch_(inactive)", "Repeater_(inactive)", "Sapling", "Spruce_Door", "Stained_Glass_Pane", "Sugar_Cane", "Sunflower", "Tall_Grass", "Trapdoor", "Vines", "Wheat", "Wooden_Door"]
 # List of light emitting blocks
 LIGHT_BLOCKS = ["Daylight_Sensor", "End_Gateway", "End_Portal", "Ender_Chest", "Flowing_Lava", "Glowstone", "Inverted_Daylight_Sensor", "Lava", "Magma_Block", "Redstone_Lamp_(active)", "Stationary_Lava", "Sea_Lantern"]
@@ -354,7 +354,7 @@ def stained_glass_shader(material):
     links.new(transparent_node.outputs["BSDF"], mix_node.inputs[1])
     links.new(diffuse_node.outputs["BSDF"], mix_node.inputs[2])
     links.new(mix_node.outputs["Shader"], output_node.inputs["Surface"])
-    
+
 
 def water_shader(material, use_refraction, surface_blue, volume_blue, displacement_type, displacement_amount):
     """
@@ -388,8 +388,8 @@ def water_shader(material, use_refraction, surface_blue, volume_blue, displaceme
     0: no displacement
     displacementamount can go up to any value (not recomended to go above 1)
     """
-    
-    
+
+
     nodes, node_tree = setup_node_tree(material)
     # Create the output node
     output_node = nodes.new('ShaderNodeOutputMaterial')
@@ -886,11 +886,10 @@ def main():
     # for every material
     for material in materials:
         if (material.active_texture and len(material.active_texture.name)>= 2 and material.active_texture.name[0:2] == "Kd"):
-            material_suffix = material.name[material.name.rfind("."):len(material.name)] # gets the .001 .002 .003 ... of the material
-            try:
-                int(material_suffix[1:])
-            except:
-                material_suffix = ""
+            # gets the _1, _2, _3 ... _10, _11 ... of the material
+            material_suffix = ""
+            if material.name[-1].isdigit():
+                material_suffix = material.name[material.name.rfind("__"):len(material.name)]
             # if the material is transparent use a special shader
             if any(material == bpy.data.materials.get(transparentBlock+material_suffix) for transparentBlock in TRANSPARENT_BLOCKS):
                 print(material.name+" is transparent.")
